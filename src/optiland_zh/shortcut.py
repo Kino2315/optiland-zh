@@ -133,10 +133,19 @@ def _install_windows(link: Path, exe: Path, workdir: Path, icon: Path | None) ->
         ["powershell", "-NoProfile", "-NonInteractive", "-Command", script],
         capture_output=True,
         text=True,
+        # 必须显式给编码。不给的话 subprocess 用系统 locale 解码，而在
+        # 非中文的 Windows（比如 CI 的英文 runner，cp1252）上解不了中文输出，
+        # 会在**读取线程**里抛 UnicodeDecodeError —— 异常不冒泡到主线程，
+        # 只是让 stdout/stderr 变成空的，最后表现为一句没有任何细节的
+        # "创建快捷方式失败"。errors="replace" 保证再坏也不会把线程搞崩。
+        encoding="utf-8",
+        errors="replace",
     )
     if result.returncode != 0 or not link.exists():
+        detail = (result.stderr or result.stdout or "").strip()[:400]
         raise RuntimeError(
-            "创建快捷方式失败。" + (result.stderr or result.stdout or "").strip()[:300]
+            f"创建快捷方式失败（PowerShell 退出码 {result.returncode}）。"
+            + (f"\n\n{detail}" if detail else "\n\n（PowerShell 没有输出任何信息）")
         )
 
 
