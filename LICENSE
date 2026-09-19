@@ -19,17 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Third-party notice
-------------------
-
-This package localizes the graphical user interface of Optiland
-(https://github.com/optiland/optiland), which is distributed under the MIT
-License, Copyright (c) 2024 Kramer Harrison.
-
-optiland-zh does not redistribute, modify, or link against Optiland's source.
-It operates entirely at runtime by assigning to PySide6 binding methods in the
-user's own process, and it ships only its own source code and translation data.
-Optiland is a runtime dependency and must be installed separately.

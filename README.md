@@ -237,9 +237,11 @@ Qt 的 objectName。
 
 ## 许可
 
-MIT。上游 [Optiland](https://github.com/optiland/optiland) 也是 MIT
-（Copyright © 2024 Kramer Harrison），本项目通过运行期补丁工作，
-不分发也不修改其源码。
+MIT，见 [LICENSE](LICENSE)。
+
+上游 [Optiland](https://github.com/optiland/optiland) 同为 MIT
+（Copyright © 2024 Kramer Harrison）。本项目通过运行期补丁工作，不分发也不修改
+其源码。第三方组件与术语来源的说明见 [NOTICE.md](NOTICE.md)。
 
 ## 贡献
 

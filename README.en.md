@@ -246,9 +246,12 @@ would change the font), scipy algorithm names, Qt object names.
 
 ## License
 
-MIT. Upstream [Optiland](https://github.com/optiland/optiland) is MIT as well
+MIT — see [LICENSE](LICENSE).
+
+Upstream [Optiland](https://github.com/optiland/optiland) is MIT as well
 (Copyright © 2024 Kramer Harrison). This project works by runtime patching and
-neither redistributes nor modifies its source.
+neither redistributes nor modifies its source. Third-party components and
+terminology sources are documented in [NOTICE.md](NOTICE.md).
 
 ## Contributing
 
