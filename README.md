@@ -1,4 +1,5 @@
-# optiland-zh
+# optiland-zh  
+vibe coding
 
 **Optiland GUI 简体中文汉化包** —— 运行期翻译层，不改上游源码一行。
 
