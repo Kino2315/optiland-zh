@@ -69,10 +69,26 @@ jobs:
 
       # 词库是纯数据，不需要 Qt。这一步跑得飞快，而且它是这个项目
       # 最核心的资产 —— 一条格式写错的词条会让用户界面上出现半中半英。
+      #
+      # 注意只装 pytest，不装 .[dev]（那会把 build/twine 及其依赖树都拖进来，
+      # 白白拖慢这个「快」任务）。早先还漏了 pytest 本身，job 直接以
+      # "No module named pytest" 失败。
+      - name: 安装（只装 pytest，不装 Qt）
+        run: pip install -e . pytest
+
+      # 这个任务的价值全在「不需要 Qt」上。哪天有人手滑让依赖里带上 PySide6，
+      # 它就退化成普通的测试任务、白占一个 runner，而且没人会注意到。
+      # 让这个不变量自己守着自己。
+      - name: 确认确实没把 Qt 拖进来
+        run: |
+          python -c "import importlib.util,sys; sys.exit(1 if importlib.util.find_spec('PySide6') else 0)"
+
       - name: 校验词库
         run: |
-          pip install -e .
-          python -m pytest tests/test_catalog.py -q -k "Catalog or Integrity or Pattern"
+          # 不加 -k：脚本名字就叫 test_catalog.py，而 -k 是拿整个节点 ID
+          # （含文件路径）做匹配的 —— 写 "Catalog" 等于把所有测试都选上，
+          # 包括需要 Qt 的那批。拆完文件后这个文件本身零 Qt 依赖，全跑即可。
+          python -m pytest tests/test_catalog.py -q
 
   build:
     name: 打包并校验产物
