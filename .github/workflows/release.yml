@@ -77,6 +77,16 @@ jobs:
           python -m build
           python -m twine check dist/*
 
+      # 这一步是发布前的最后一道闸。
+      # twine check 对 Markdown 不做渲染（其 _RENDERERS 把
+      # "text/markdown" 映射成 None），所以项目页渲染成什么样它不管。
+      # 而发布是不可逆的：描述坏了只能升版本号重发。
+      # 这个脚本用 PyPI 同款渲染器真渲一遍，并检查链接是否为绝对地址。
+      - name: 校验项目描述能被 PyPI 渲染
+        run: |
+          pip install "readme_renderer[md]"
+          python scripts/check_description.py
+
       # 词库没打进 wheel 是这项目最隐蔽的发布事故：
       # 本地开发发现不了（源码目录还在），用户装完才会发现没中文。
       - name: 确认词库在 wheel 里

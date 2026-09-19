@@ -117,6 +117,77 @@ python -m optiland_zh.audit
 - 改引擎的 PR 请在描述里贴 `--self-test` 和 `--audit` 的输出。
 - 加语言的 PR 请贴 `--coverage` 的数字，别低得离谱（目前 zh_CN 是 99.5%）。
 
+## 发布（维护者）
+
+发布走 GitHub Actions。**不需要在本地跑 `twine upload`，也不需要持有 PyPI token**
+——用的是 Trusted Publishing（OIDC），GitHub 拿一次性身份令牌去换上传权限。
+
+### 步骤
+
+**1. 改版本号，两处必须一致**（有测试守着，不一致 CI 就红）：
+
+```
+pyproject.toml                 version = "0.1.1"
+src/optiland_zh/__init__.py    __version__ = "0.1.1"
+```
+
+**2. 提交并推送**：
+
+```sh
+git add -A && git commit -m "release: v0.1.1" && git push
+```
+
+**3. 从命令行建 tag 并推送**：
+
+```sh
+git tag v0.1.1 && git push origin v0.1.1
+```
+
+> 推 tag 本身**不会触发任何东西**（workflow 只监听 `release: published`），
+> 是安全的。
+>
+> 而且从命令行建 tag 能绕开一个很常见的坑：**在网页上手动输入 tag 时，
+> 中文输入法会把 `v` 或 `.` 打成全角**（`ｖ0.1.1`），GitHub 会报
+> `tag name is not well-formed`。命令行不会出这个问题。
+
+**4. 去 Releases → Create a new release**，在 **Choose a tag** 的
+**下拉列表里点选**刚推上去的 tag（**别手打**），标题和描述随意，
+然后点 **Publish release**。
+
+**5. 剩下的自动跑**：装依赖 → 跑测试 → 校验 tag 与 pyproject 版本一致 →
+校验包内 `__version__` 一致 → 打包 → `twine check` →
+校验项目描述能渲染 → 校验词库在 wheel 里 → OIDC 换令牌 → 上传 PyPI。
+
+### 四个必须知道的点
+
+- **版本号不能重传。** 同一个版本号发到 PyPI 之后不能再发第二次，哪怕内容是坏的。
+  发现问题只能升版本号重发。
+
+- **`twine check` 查不出 Markdown 的问题。** 它对 `text/markdown` 直接把渲染器
+  设成 `None`（源码里注释写着 "Rendering cannot fail"），也就是**根本不做渲染**，
+  却会报 PASSED。真正管这件事的是 `scripts/check_description.py`，
+  CI 和发布流水线都会跑它。
+
+- **README 里不能用相对路径。** PyPI 不解析相对路径：图片会变成破图、
+  链接会 404，而渲染本身不会报错，所以只能靠上面那两个检查拦。
+
+- **想先试水**，可以在 Actions 里手动跑 **Release** 工作流、target 选 `testpypi`。
+  但那需要**单独注册一个 TestPyPI 账号**（独立账号体系）并再配一份
+  pending publisher，成本不低。常规发版直接走正式 PyPI 即可。
+
+### 首次配置（只做一次）
+
+PyPI → Account settings → [Publishing](https://pypi.org/manage/account/publishing/)
+→ Add a new pending publisher：
+
+| 字段 | 值 |
+|---|---|
+| PyPI Project Name | `optiland-gui-zh` |
+| Owner | `Kino2315` |
+| Repository name | `optiland-zh` |
+| Workflow name | `release.yml`（**文件名，不是 workflow 的显示名 `Release`**） |
+| Environment name | `pypi` |
+
 ## 报告问题
 
 带上这些信息，排查会快很多：

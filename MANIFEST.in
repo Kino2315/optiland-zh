@@ -11,5 +11,9 @@ include README.en.md
 # 项目介绍（叙述式技术文档，对下游读源码有帮助）
 recursive-include docs *.md
 
+# CI 辅助脚本。CONTRIBUTING.md 会引用 check_description.py，
+# 而 CONTRIBUTING.md 本身在 sdist 里 —— 不带上脚本就会留个断掉的引用。
+recursive-include scripts *.py
+
 # 不用带 docs/*.png：README 和 intro.md 里的截图走的是
 # raw.githubusercontent 绝对地址，sdist 里再塞一份是白增 230KB。

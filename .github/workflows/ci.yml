@@ -103,6 +103,14 @@ jobs:
       - run: python -m build
       - run: python -m twine check dist/*
 
+      # twine check 对 Markdown 是**不做渲染**的（twine 的 _RENDERERS 里
+      # 写着 "text/markdown": None），所以它对项目页一个字都没验证却报 PASSED。
+      # 这一步补上：用 PyPI 同款渲染器真渲一遍，再查链接是不是绝对地址。
+      - name: 校验项目描述能被 PyPI 渲染
+        run: |
+          pip install "readme_renderer[md]"
+          python scripts/check_description.py
+
       # 这条是给"词库没打进 wheel"上的保险。
       # 打包配置一旦被改动（换构建后端、改 package-data），
       # 最容易坏的就是这一条，而它坏了的表现是"装完没中文"，
