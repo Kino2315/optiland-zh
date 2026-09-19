@@ -114,15 +114,24 @@ def _install_windows(link: Path, exe: Path, workdir: Path, icon: Path | None) ->
     """用 PowerShell 的 WScript.Shell 建 .lnk。
 
     不用 pywin32：为一个快捷方式引入一个新依赖不划算。
-    注意脚本里的路径必须转义单引号（PowerShell 单引号字符串里 '' 表示一个 '）。
+
+    **文件名必须先用纯 ASCII 建，再用 Python 改名。** 原因是实测出来的：
+    ``WScript.Shell`` 这个 COM 组件在 ANSI 代码页不是中文的系统上（比如
+    英文 Windows），会把路径里的中文转成 ``?``，然后去找一个不存在的路径，
+    抛 ``FileNotFoundException``。而 ``os.replace`` 走的是 Unicode 的
+    ``MoveFileExW``，没有这个问题。
+
+    这个坑不是 CI 特有的 —— 英文版 Windows 的用户同样会踩到。
     """
 
     def ps(path: Path) -> str:
         return str(path).replace("'", "''")
 
+    # ASCII 中转名。放在同一个目录里，保证改名是同盘操作。
+    scratch = link.with_name("optiland-zh-shortcut-tmp.lnk")
     icon_line = f"$s.IconLocation = '{ps(icon)},0';" if icon else ""
     script = (
-        f"$s = (New-Object -ComObject WScript.Shell).CreateShortcut('{ps(link)}');"
+        f"$s = (New-Object -ComObject WScript.Shell).CreateShortcut('{ps(scratch)}');"
         f"$s.TargetPath = '{ps(exe)}';"
         f"$s.WorkingDirectory = '{ps(workdir)}';"
         f"{icon_line}"
@@ -141,12 +150,19 @@ def _install_windows(link: Path, exe: Path, workdir: Path, icon: Path | None) ->
         encoding="utf-8",
         errors="replace",
     )
-    if result.returncode != 0 or not link.exists():
+
+    if result.returncode != 0 or not scratch.exists():
         detail = (result.stderr or result.stdout or "").strip()[:400]
+        scratch.unlink(missing_ok=True)
         raise RuntimeError(
             f"创建快捷方式失败（PowerShell 退出码 {result.returncode}）。"
             + (f"\n\n{detail}" if detail else "\n\n（PowerShell 没有输出任何信息）")
         )
+
+    # 改成正名。用 os.replace 是因为它按 Unicode 处理路径，
+    # 不会像上面的 COM 组件那样把中文折成 '?'。
+    link.unlink(missing_ok=True)
+    scratch.replace(link)
 
 
 def _desktop_entry(exe: Path, icon: Path | None) -> str:
