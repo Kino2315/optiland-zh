@@ -1,0 +1,16 @@
+# 统一换行符。
+#
+# 没有这个文件时，Windows 上 git 的 core.autocrlf 会在提交/检出时改写换行符，
+# 结果是 Linux/macOS 的贡献者一提交，本地就显示"整个文件都改动了"，
+# 真正改了什么完全看不出来。对一个要跨平台协作的开源项目，这是必须修的。
+* text=auto eol=lf
+
+# 二进制文件不要碰，改了会损坏
+*.png binary
+*.jpg binary
+*.ico binary
+*.qm binary
+
+# Windows 批处理必须是 CRLF，否则某些环境下不执行
+*.bat text eol=crlf
+*.cmd text eol=crlf

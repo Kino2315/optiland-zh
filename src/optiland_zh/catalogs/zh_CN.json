@@ -1,0 +1,781 @@
+{
+  "language": "zh_CN",
+  "display_name": "简体中文",
+  "version": "0.1.0",
+  "translators": [
+    "optiland-zh contributors"
+  ],
+  "notes": [
+    "术语对齐 Zemax 中文版习惯：Lens Data Editor=镜头数据编辑器，Aperture=孔径，",
+    "Field=视场，Wavelength=波长，Stop=光阑，Sag=矢高，Spot Diagram=点列图，",
+    "Ray Fan=光线扇形图，OPD=光程差，MTF=调制传递函数，PSF=点扩散函数。",
+    "快捷键沿用 Windows 中文惯例：文件(&F) 编辑(&E) 视图(&V) 帮助(&H)。",
+    "故意不翻译：Cascadia Code（字体名，翻了会换字体）。"
+  ],
+
+  "entries": {
+    "  Frequency:": "  频率：",
+    "&About Optiland GUI": "关于 Optiland GUI(&A)",
+    "&Edit": "编辑(&E)",
+    "&Export": "导出(&X)",
+    "&File": "文件(&F)",
+    "&Gallery": "图库(&G)",
+    "&Help": "帮助(&H)",
+    "&Import": "导入(&I)",
+    "&New System": "新建系统(&N)",
+    "&Open System...": "打开系统(&O)...",
+    "&Run": "运行(&R)",
+    "&Samples": "示例(&S)",
+    "&Save System": "保存系统(&S)",
+    "&Theme": "主题(&T)",
+    "&View": "视图(&V)",
+
+    "+ Add Operand": "+ 添加操作数",
+    "+ Add Variable": "+ 添加变量",
+    "- Remove Selected": "- 移除选中项",
+    "2D Layout": "2D 布局",
+    "3D Layout": "3D 布局",
+    "<b>Parameters</b>": "<b>参数</b>",
+    "<h3>Initializing application...</h3>": "<h3>正在初始化程序...</h3>",
+
+    "A minimal optical system (at least 2 surfaces) is required.": "至少需要一个两面的光学系统。",
+    "About Optiland GUI": "关于 Optiland GUI",
+    "Add Field": "添加视场",
+    "Add Optimization Operand": "添加优化操作数",
+    "Add Optimization Variable": "添加优化变量",
+    "Add Standard Surface": "添加标准面",
+    "Add Surface": "添加面",
+    "Add Surface Above": "在上方插入面",
+    "Add Wavelength": "添加波长",
+    "Add a new surface after the current selection (Insert)": "在当前选中面之后插入新面 (Insert)",
+    "Add as Optimization Variable...  Ctrl+Shift+V": "添加为优化变量...  Ctrl+Shift+V",
+    "All polarization fields are required when mode is 'polarized'.": "偏振模式下的所有偏振参数都必须填写。",
+    "Analysis Error": "分析错误",
+    "Analysis Settings": "分析设置",
+    "Analysis Type:": "分析类型：",
+    "Analysis cloned successfully.": "分析已克隆。",
+    "Analysis removed.": "分析已移除。",
+    "AnalysisRunner: could not load '%s' (%s): %s": "AnalysisRunner：无法加载 '%s'（%s）：%s",
+    "Angle vs Height (Field)": "角度 vs 高度（视场）",
+    "Angle vs Height (Pupil)": "角度 vs 高度（光瞳）",
+    "Angle vs Height (Scan Field)": "角度 vs 高度（扫描视场）",
+    "Angle vs Height (Scan Pupil)": "角度 vs 高度（扫描光瞳）",
+    "Aperture Type:": "孔径类型：",
+    "Apply Aperture Changes": "应用孔径改动",
+    "Apply Field Changes": "应用视场改动",
+    "Apply Polarization": "应用偏振",
+    "Apply Wavelength Changes": "应用波长改动",
+    "Apply current settings and rerun analysis": "应用当前设置并重新运行分析",
+    "Asphere Coeff": "非球面系数",
+    "Auto-Generate": "自动生成",
+    "Auto-Generate Image Quality Operands": "自动生成像质操作数",
+
+    "Basin Hopping [no bounds]": "盆地跳跃 [无需边界]",
+    "Best-Fit Ray Fan": "最佳拟合光线扇形图",
+
+    "CODE V Files (*.seq);;All Files (*)": "CODE V 文件 (*.seq);;所有文件 (*)",
+    "Clone Analysis": "克隆分析",
+    "Coefficients YZ": "YZ 系数",
+    "Conic X": "X 圆锥系数",
+    "Conic Y": "Y 圆锥系数",
+    "Conic YZ": "YZ 圆锥系数",
+    "Could not import resources_rc.py: %s": "无法导入 resources_rc.py：%s",
+    "Could not inspect parameters for %s: %s": "无法读取 %s 的参数：%s",
+    "Create a new optical system": "新建一个光学系统",
+    "Current Project: UnnamedProject.opds": "当前项目：UnnamedProject.opds",
+    "Current Value": "当前值",
+
+    "Dark Theme": "深色主题",
+    "Data Analysis info will appear here.": "数据分析信息将显示在这里。",
+    "Default System": "默认系统",
+    "Differential Evolution [bounds req.]": "差分进化 [需要边界]",
+    "Distortion Plot": "畸变图",
+    "Dock All Windows": "全部停靠",
+    "Dual Annealing [bounds req.]": "对偶退火 [需要边界]",
+
+    "Edit Optimization Operand": "编辑优化操作数",
+    "Edit Optimization Variable": "编辑优化变量",
+    "Encircled Energy": "包围圆能量",
+    "Enter a name for this action:": "为这个操作起个名字：",
+    "Error plotting system": "绘制系统出错",
+    "Error: no optimizer selected.": "错误：未选择优化器。",
+    "Export to CODE V": "导出为 CODE V",
+    "Export to Zemax": "导出为 Zemax",
+
+    "FFT MTF": "FFT 调制传递函数",
+    "FFT PSF": "FFT 点扩散函数",
+    "Failed to restore dock/toolbar state from slot %d.": "无法从槽位 %d 恢复停靠/工具栏状态。",
+    "Failed to restore window geometry from slot %d.": "无法从槽位 %d 恢复窗口位置。",
+    "Field Curvature": "场曲",
+    "Field Type:": "视场类型：",
+    "Float/Dock": "浮动/停靠",
+    "Focal Length": "焦距",
+    "From &CODE V (.seq)...": "从 CODE V 导入(&C)...",
+    "From &Zemax (.zmx)...": "从 Zemax 导入(&Z)...",
+
+    "Generic (scipy.minimize)": "通用 (scipy.minimize)",
+    "Geometric MTF": "几何调制传递函数",
+    "Get Surface Info": "读取面型信息",
+    "Grid Distortion": "网格畸变",
+
+    "Huygens PSF": "惠更斯点扩散函数",
+
+    "Import CODE V File": "导入 CODE V 文件",
+    "Import Zemax File": "导入 Zemax 文件",
+    "Invalid Input": "输入无效",
+
+    "JSON Files (*.json);;All Files (*)": "JSON 文件 (*.json);;所有文件 (*)",
+
+    "Least Squares": "最小二乘",
+    "Lens Data Editor": "镜头数据编辑器",
+    "Lens Editor": "镜头编辑器",
+    "Light Theme": "浅色主题",
+    "Live Updates": "实时更新",
+    "Load Analysis Settings": "载入分析设置",
+    "Load Error": "载入错误",
+    "Load Layout from Slot 1": "从槽位 1 载入布局",
+    "Load Layout from Slot 2": "从槽位 2 载入布局",
+    "Load Script": "载入脚本",
+    "Load Script (Ctrl+O)": "载入脚本 (Ctrl+O)",
+    "Load analysis settings from a file": "从文件载入分析设置",
+    "Lock the current zoom and pan level when the system updates.": "系统更新时保持当前缩放和平移不变。",
+    "Loop Through Surfaces": "遍历所有面",
+
+    "MMDFT PSF": "MMDFT 点扩散函数",
+    "Make Stop Surface": "设为光阑面",
+    "Max value:": "最大值：",
+    "Min value:": "最小值：",
+    "Mode:": "模式：",
+
+    "New Script (Ctrl+N)": "新建脚本 (Ctrl+N)",
+    "New Surface": "新建面",
+    "New Untitled System": "新建未命名系统",
+    "No Analysis Run": "尚未运行分析",
+    "No Analysis Selected": "未选择分析",
+    "No additional properties for this surface type.": "该面型没有额外属性。",
+    "No analysis page selected to refresh.": "未选择要刷新的分析页。",
+    "No optical system loaded to export.": "没有已载入的光学系统可供导出。",
+    "No results found": "未找到结果",
+    "No samples found.": "未找到示例。",
+    "No settings available.": "没有可用的设置。",
+    "No system loaded": "未载入系统",
+    "Norm X": "X 归一化",
+    "Norm Y": "Y 归一化",
+    "Normalization Radius": "归一化半径",
+    "Num Rays:": "光线条数：",
+    "Number of Rays:": "光线条数：",
+
+    "OPD Fan": "光程差扇形图",
+    "Object Height": "物高",
+    "Open Documentation": "打开文档",
+    "Open GitHub Page": "打开 GitHub 页面",
+    "Open Optiland System": "打开 Optiland 系统",
+    "Open an existing system file": "打开已有的系统文件",
+    "Optical Path Difference (OPD)": "光程差 (OPD)",
+    "Optiland GUI": "Optiland 图形界面",
+    "Optiland JSON Files (*.json);;All Files (*)": "Optiland JSON 文件 (*.json);;所有文件 (*)",
+    "Optiland JSON Files (*.json);;Zemax Files (*.zmx);;All Files (*)": "Optiland JSON 文件 (*.json);;Zemax 文件 (*.zmx);;所有文件 (*)",
+    "Optimization complete": "优化完成",
+    "Optimization variables: ": "优化变量：",
+    "OptimizationService: skipping operand %s: %s": "OptimizationService：跳过操作数 %s：%s",
+    "OptimizationService: skipping variable %s surface %s: %s": "OptimizationService：跳过变量 %s（面 %s）：%s",
+    "Orthogonal Descent": "正交下降",
+
+    "Paraxial Image Height": "近轴像高",
+    "Phase X (°):": "X 相位 (°)：",
+    "Phase Y (°):": "Y 相位 (°)：",
+    "Please set an aperture in System Properties.": "请先在系统属性里设置孔径。",
+    "Plot Sag": "绘制矢高",
+    "Preserve Zoom": "保持缩放",
+    "Pupil Aberration": "光瞳像差",
+    "Python Files (*.py)": "Python 文件 (*.py)",
+
+    "Quick-Actions": "快捷操作",
+
+    "RMS Spot Size": "RMS 点列尺寸",
+    "RMS Spot Size vs Field": "RMS 点列尺寸 vs 视场",
+    "RMS Wavefront Error vs Field": "RMS 波前误差 vs 视场",
+    "RMS Wavefront vs Field": "RMS 波前 vs 视场",
+    "Radius X": "X 半径",
+    "Radius Y": "Y 半径",
+    "Radius YZ": "YZ 半径",
+    "Radius of Rotation (XZ)": "旋转半径 (XZ)",
+    "Ray A": "光线 A",
+    "Ray B": "光线 B",
+    "Ray Fan": "光线扇形图",
+    "Real Image Height": "实际像高",
+    "Refresh GUI": "刷新界面",
+    "Refresh current values": "刷新当前值",
+    "Refreshing current analysis...": "正在刷新当前分析...",
+    "Remove Analysis": "移除分析",
+    "Remove Current Surface": "移除当前面",
+    "Remove Field": "移除视场",
+    "Remove Surface": "移除面",
+    "Remove Wavelength": "移除波长",
+    "Remove the currently selected surface (Delete)": "移除当前选中的面 (Delete)",
+    "Reset Layout": "重置布局",
+    "Reset Window Layout": "重置窗口布局",
+    "Reset original view": "恢复原始视图",
+    "Reset to default dock layout": "恢复默认停靠布局",
+    "Results / Log:": "结果 / 日志：",
+    "Run All: Not yet implemented.": "全部运行：尚未实现。",
+    "Run Analysis": "运行分析",
+    "Run Script (F5)": "运行脚本 (F5)",
+    "Run Selected Analysis": "运行选中的分析",
+    "Run an analysis to see results.": "运行一个分析即可看到结果。",
+
+    "SHGO [bounds req.]": "SHGO [需要边界]",
+    "Sag (z)": "矢高 (z)",
+    "Sag Viewer Settings": "矢高查看器设置",
+    "Sample Load Error": "示例载入错误",
+    "Save As": "另存为",
+    "Save Changes": "保存改动",
+    "Save Current Layout": "保存当前布局",
+    "Save Error": "保存错误",
+    "Save Optiland System As...": "Optiland 系统另存为...",
+    "Save Quick-Action": "保存快捷操作",
+    "Save Script": "保存脚本",
+    "Save Script (Ctrl+S)": "保存脚本 (Ctrl+S)",
+    "Save System &As...": "系统另存为(&A)...",
+    "Save as Quick-Action": "保存为快捷操作",
+    "Save current analysis settings to a file": "把当前分析设置保存到文件",
+    "Save current window layout to next available slot (1 or 2)": "把当前窗口布局保存到下一个可用槽位 (1 或 2)",
+    "Save the current system": "保存当前系统",
+    "Save to a new file": "保存到新文件",
+    "Script Editor": "脚本编辑器",
+    "Scripts Terminal": "脚本终端",
+    "Search commands…": "搜索命令…",
+    "Select or Run an Analysis": "选择或运行一个分析",
+    "Set Selected as Primary": "将选中项设为主波长",
+    "Set System Aperture": "设置系统孔径",
+    "Set the viewing area extent (±mm)": "设置可视范围 (±mm)",
+    "Settings file does not contain an 'analysis_name'.": "设置文件中没有 'analysis_name' 字段。",
+    "Show/Hide Surface Properties": "显示/隐藏面属性",
+    "Spot & Ray": "点列与光线",
+    "Spot Diagram": "点列图",
+    "Starting optimization...": "开始优化...",
+    "Stop Analysis": "停止分析",
+    "Stop: Not yet implemented.": "停止：尚未实现。",
+    "Surface #:": "面序号：",
+    "Surface Editor (WIP)": "面型编辑器（开发中）",
+    "Surface Index:": "面索引：",
+    "Surface Properties": "面属性",
+    "SurfaceService: Cannot remove Object or Image surface.": "SurfaceService：不能删除物面或像面。",
+    "SurfaceService: Error setting data at (%d, %d) to '%s': %s": "SurfaceService：设置 (%d, %d) 的数据为 '%s' 时出错：%s",
+    "SurfaceService: Error setting geometry params: %s": "SurfaceService：设置几何参数出错：%s",
+    "SurfaceService: Error setting stop surface: %s": "SurfaceService：设置光阑面出错：%s",
+    "SurfaceService: Error setting surface type: %s": "SurfaceService：设置面型出错：%s",
+    "SurfaceService: Stop must be an intermediate surface.": "SurfaceService：光阑必须是中间面。",
+    "Switch to dark mode": "切换到深色模式",
+    "Switch to light mode": "切换到浅色模式",
+    "System Properties": "系统属性",
+    "System Viewer": "系统视图",
+
+    "Target Metric": "目标指标",
+    "The current system has unsaved changes. Importing will replace it. Continue?": "当前系统有未保存的改动，导入会覆盖它。是否继续？",
+    "The optical system has no defined wavelengths.": "该光学系统没有定义波长。",
+    "The settings panel is currently under development.": "设置面板正在开发中。",
+    "This feature is currently under development. Stay tuned for updates to the GUI!": "该功能正在开发中，敬请期待后续更新！",
+    "Through-Focus Spot": "离焦点列",
+    "Through-Focus Spot Diagram": "离焦点列图",
+    "To &CODE V (.seq)...": "导出为 CODE V(&C)...",
+    "To &Zemax (.zmx)...": "导出为 Zemax(&Z)...",
+    "Toggle Navigation Sidebar": "显示/隐藏导航侧栏",
+    "Toggle Sag Viewer Settings": "显示/隐藏矢高查看器设置",
+    "Toggle Viewer Settings": "显示/隐藏查看器设置",
+
+    "Undock (WIP)": "取消停靠（开发中）",
+    "Unsaved Changes": "未保存的改动",
+
+    "VTK is not available.": "VTK 不可用。",
+    "Value (µm)": "数值 (µm)",
+    "Variable Values": "变量值",
+    "View Extent:": "可视范围：",
+    "Vignette X": "X 渐晕",
+    "Vignette Y": "Y 渐晕",
+
+    "Welcome to Optiland!\n": "欢迎使用 Optiland！\n",
+
+    "X Cross-section (for Y-plot):": "X 截面（用于 Y 图）：",
+    "X-Axis (0)": "X 轴 (0)",
+    "X-Field": "X 视场",
+    "Y Cross-section (for X-plot):": "Y 截面（用于 X 图）：",
+    "Y-Axis (1)": "Y 轴 (1)",
+    "Y-Field": "Y 视场",
+
+    "Zemax Files (*.zmx);;All Files (*)": "Zemax 文件 (*.zmx);;所有文件 (*)",
+    "Zernike OPD": "Zernike 光程差",
+
+    "line ray": "线光线",
+    "point ray": "点光线",
+
+    "■  Stop": "■  停止",
+    "▶  Run": "▶  运行",
+
+    "&Redo": "重做(&R)",
+    "&Undo": "撤销(&U)",
+    "E&xit": "退出(&X)",
+    "Analysis": "分析",
+    "Optimization": "优化",
+    "Settings": "设置",
+    "Close": "关闭",
+    "Hide": "隐藏",
+    "Maximize": "最大化",
+    "Minimize": "最小化",
+    "Restore": "还原",
+    "Console": "控制台",
+    "Bigger Font": "放大字体",
+    "Normal Font": "标准字体",
+    "Smaller Font": "缩小字体",
+
+    "Algorithm:": "算法：",
+    "Category": "类别",
+    "Category:": "类别：",
+    "Distribution:": "分布：",
+    "Fields": "视场",
+    "Generate": "生成",
+    "Max": "最大",
+    "Min": "最小",
+    "Operands": "操作数",
+    "Optimizer": "优化器",
+    "Parameters": "参数",
+    "Primary": "主",
+    "Surface": "面",
+    "Target": "目标",
+    "Target:": "目标：",
+    "Type": "类型",
+    "Type:": "类型：",
+    "Unit": "单位",
+    "Value:": "数值：",
+    "Variables": "变量",
+    "Visualization": "可视化",
+    "Wavelengths": "波长",
+    "Weight": "权重",
+    "Weight:": "权重：",
+    "Apply": "应用",
+    "Sag": "矢高",
+    "Yes": "是",
+
+    "Back": "后退",
+    "Forward": "前进",
+    "Home": "主页",
+    "Pan": "平移",
+    "Zoom": "缩放",
+    "Save": "保存",
+    "Subplots": "子图",
+    "Customize": "自定义",
+
+    "Angle": "角度",
+    "Default": "默认",
+    "Ignore": "忽略",
+    "Global": "全局",
+    "Local": "局部",
+    "local": "局部",
+    "all": "全部",
+    "Aberrations": "像差",
+    "Distortion": "畸变",
+    "Wavefront": "波前",
+    "hexapolar": "六角极坐标",
+    "ring": "环形",
+    "grid": "网格",
+    "random": "随机",
+    "uniform": "均匀",
+    "gaussian": "高斯",
+    "centroid": "质心",
+    "chief_ray": "主光线",
+    "primary": "主波长",
+    "line_x": "X 方向线",
+    "line_y": "Y 方向线",
+    "float_by_stop_size": "按光阑尺寸浮动",
+    "imageFNO": "像方 F 数",
+    "objectNA": "物方数值孔径",
+    "EPD": "入瞳直径",
+    "Polarized": "偏振",
+    "Unpolarized": "非偏振",
+
+    "Objectives": "物镜",
+    "Telescopes": "望远镜",
+    "Microscopes": "显微镜",
+    "Eyepieces": "目镜",
+    "Miscellaneous": "其他",
+    "Infrared": "红外",
+    "Lithography": "光刻",
+    "Simple": "简单",
+
+    "Standard": "标准",
+    "Plane": "平面",
+    "Biconic": "双圆锥",
+    "Even_Asphere": "偶次非球面",
+    "Odd_Asphere": "奇次非球面",
+    "Grid_Sag": "网格矢高",
+    "Nurbs": "NURBS 曲面",
+    "Polynomial": "多项式",
+    "Toroidal": "环面",
+    "Chebyshev": "切比雪夫",
+    "Grating": "光栅",
+    "Paraxial": "近轴",
+    "Zernike": "Zernike",
+    "Forbes_Q2D": "Forbes Q2D",
+    "Forbes_Qbfs": "Forbes Qbfs",
+
+    "Cooketriplet": "库克三片式",
+    "Doublegauss": "双高斯",
+    "Cementedachromat": "胶合消色差透镜",
+    "Petzvallens": "匹兹伐镜头",
+    "Tessarlens": "天塞镜头",
+    "Heliarlens": "海利亚镜头",
+    "Telephoto": "远摄",
+    "Reversetelephoto": "反远距",
+    "Eyepieceerfle": "埃尔弗目镜",
+    "Navarrowideangleeye": "窄角广角目镜",
+    "Asphericsinglet": "非球面单透镜",
+    "Singletstopsurf2": "单透镜（光阑在第 2 面）",
+    "Telescopedoublet": "望远镜双胶合",
+    "Triplettelescopeobjective": "三片式望远镜物镜",
+    "Telescopeobjective48Inch": "48 英寸望远镜物镜",
+    "Hubbletelescope": "哈勃望远镜",
+    "Microscope20X": "20X 显微镜",
+    "Objective60X": "60X 物镜",
+    "Objectiveus008879901": "美国专利 008879901 物镜",
+    "Uvprojectionlens": "紫外投影镜头",
+    "Uvreflectingmicroscope": "紫外反射显微镜",
+    "Infraredtriplet": "红外三片式",
+    "Infraredtripletf4": "红外三片式 f/4",
+    "Lenswithfieldcorrector": "带场镜校正的镜头",
+    "Edmund 49 847": "爱特蒙特 49-847",
+
+    "Comment": "备注",
+    "Radius": "半径",
+    "Thickness": "厚度",
+    "Material": "材料",
+    "Conic": "圆锥系数",
+    "Semi-Diameter": "半口径",
+    "Coordinates:": "坐标：",
+    "Disp:": "位移：",
+    "Ex:": "Ex：",
+    "Ey:": "Ey：",
+    "Method:": "方法：",
+    "Maxiter:": "最大迭代：",
+    "Num Rings:": "环数：",
+    "Reference:": "参考：",
+    "Tol:": "容差：",
+    "Fields:": "视场：",
+    "Wavelengths:": "波长：",
+    "Add Airy Disk": "添加艾里斑",
+    "global": "全局",
+    "Close Tab": "关闭标签页",
+    "Copy (Raw Text)": "复制（原始文本）",
+    "Print": "打印",
+    "Save as HTML/XML": "另存为 HTML/XML",
+    "Select All": "全选",
+    "Dash": "仪表盘",
+    "Design": "设计",
+    "Materials": "材料库",
+    "Scripts": "脚本",
+    "Tolerancing": "公差分析",
+
+    "Back to previous view": "返回上一个视图",
+    "Forward to next view": "前进到下一个视图",
+    "Save the figure": "保存图形",
+    "Zoom to rectangle": "框选缩放",
+    "Configure subplots": "配置子图",
+    "Edit axis, curve and image parameters": "编辑坐标轴、曲线和图像参数",
+    "Left button pans, Right button zooms": "左键平移，右键缩放",
+    "Zoom to rectangle\nx/y fixes axis": "框选缩放\nx/y 锁定坐标轴",
+    "Left button pans, Right button zooms\nx/y fixes axis, CTRL fixes aspect": "左键平移，右键缩放\nx/y 锁定坐标轴，CTRL 锁定宽高比",
+    "PSF": "点扩散函数",
+    "MTF": "调制传递函数",
+    "OPD": "光程差"
+  },
+
+  "patterns": [
+    {
+      "match": "'{0}' coord {1} outside [-1, 1].",
+      "replace": "'{0}' 坐标 {1} 超出 [-1, 1] 范围。"
+    },
+    {
+      "match": "'{0}' requires parameter(s): {1}",
+      "replace": "'{0}' 需要参数：{1}"
+    },
+    {
+      "match": "An error occurred during {0}:\n{1}",
+      "replace": "{0} 过程中出错：\n{1}"
+    },
+    {
+      "match": "Analysis Panel Error: {0}\n{1}",
+      "replace": "分析面板错误：{0}\n{1}"
+    },
+    {
+      "match": "Aperture Error: {0}",
+      "replace": "孔径错误：{0}"
+    },
+    {
+      "match": "Aperture updated: {0}, {1}",
+      "replace": "孔径已更新：{0}，{1}"
+    },
+    {
+      "match": "Cannot embed plot for {0}",
+      "replace": "无法嵌入 {0} 的图形"
+    },
+    {
+      "match": "CommandPalette: error executing '{0}': {1}",
+      "replace": "命令面板：执行 '{0}' 时出错：{1}"
+    },
+    {
+      "match": "Could not load or apply settings:\n{0}",
+      "replace": "无法载入或应用设置：\n{0}"
+    },
+    {
+      "match": "Could not load sample '{0}': {1}",
+      "replace": "无法载入示例 '{0}'：{1}"
+    },
+    {
+      "match": "Could not save file:\n{0}",
+      "replace": "无法保存文件：\n{0}"
+    },
+    {
+      "match": "Could not save settings:\n{0}",
+      "replace": "无法保存设置：\n{0}"
+    },
+    {
+      "match": "Current Project: {0}",
+      "replace": "当前项目：{0}"
+    },
+    {
+      "match": "Error: {0}",
+      "replace": "错误：{0}"
+    },
+    {
+      "match": "Error applying tight_layout on resize: {0}",
+      "replace": "窗口尺寸变化时应用 tight_layout 出错：{0}"
+    },
+    {
+      "match": "Error loading main theme {0}: {1}",
+      "replace": "载入主主题 {0} 出错：{1}"
+    },
+    {
+      "match": "Error loading sidebar stylesheet {0}: {1}",
+      "replace": "载入侧栏样式表 {0} 出错：{1}"
+    },
+    {
+      "match": "Error rendering 3D view:\n{0}",
+      "replace": "渲染 3D 视图出错：\n{0}"
+    },
+    {
+      "match": "Failed to build optimisation problem: {0}",
+      "replace": "构建优化问题失败：{0}"
+    },
+    {
+      "match": "Failed to export CODE V file to {0}: {1}",
+      "replace": "导出 CODE V 文件到 {0} 失败：{1}"
+    },
+    {
+      "match": "Failed to export Zemax file to {0}: {1}",
+      "replace": "导出 Zemax 文件到 {0} 失败：{1}"
+    },
+    {
+      "match": "Failed to import CODE V file from {0}: {1}",
+      "replace": "从 {0} 导入 CODE V 文件失败：{1}"
+    },
+    {
+      "match": "Failed to import Zemax file from {0}: {1}",
+      "replace": "从 {0} 导入 Zemax 文件失败：{1}"
+    },
+    {
+      "match": "Failed to load system from sample object: {0}",
+      "replace": "从示例对象载入系统失败：{0}"
+    },
+    {
+      "match": "Field Type Error: {0}",
+      "replace": "视场类型错误：{0}"
+    },
+    {
+      "match": "Field {0}: ({1}, {2})",
+      "replace": "视场 {0}：({1}, {2})"
+    },
+    {
+      "match": "Field at row {0} removed.",
+      "replace": "第 {0} 行视场已移除。"
+    },
+    {
+      "match": "Field type changed to: {0}",
+      "replace": "视场类型已改为：{0}"
+    },
+    {
+      "match": "Ideal n={0}",
+      "replace": "理想折射率 n={0}"
+    },
+    {
+      "match": "Invalid '{0}'. Expected 'x, y' format.",
+      "replace": "'{0}' 无效。应写成 'x, y' 格式。"
+    },
+    {
+      "match": "Invalid JSON in parameters for '{0}'",
+      "replace": "'{0}' 的参数里 JSON 无效"
+    },
+    {
+      "match": "Invalid Surface Index: {0}",
+      "replace": "面索引无效：{0}"
+    },
+    {
+      "match": "Invalid data in fields table row {0}: {1}",
+      "replace": "视场表第 {0} 行数据无效：{1}"
+    },
+    {
+      "match": "Invalid data in row {0}",
+      "replace": "第 {0} 行数据无效"
+    },
+    {
+      "match": "Invalid layout data in configuration — {0}.",
+      "replace": "配置里的布局数据无效 — {0}。"
+    },
+    {
+      "match": "Invalid numeric data in Wavelengths table row {0}.",
+      "replace": "波长表第 {0} 行的数值无效。"
+    },
+    {
+      "match": "Layout from configuration — {0} loaded.",
+      "replace": "已从配置载入布局 — {0}。"
+    },
+    {
+      "match": "Layout saved to configuration — {0}",
+      "replace": "布局已保存到配置 — {0}"
+    },
+    {
+      "match": "Load failed: {0}",
+      "replace": "载入失败：{0}"
+    },
+    {
+      "match": "Loaded sample: {0}",
+      "replace": "已载入示例：{0}"
+    },
+    {
+      "match": "No layout saved in configuration — {0}.",
+      "replace": "配置里没有保存布局 — {0}。"
+    },
+    {
+      "match": "Open Analysis panel and run {0}",
+      "replace": "打开分析面板并运行 {0}"
+    },
+    {
+      "match": "Opened — {0}",
+      "replace": "已打开 — {0}"
+    },
+    {
+      "match": "Operand '{0}' skipped: {1}",
+      "replace": "操作数 '{0}' 已跳过：{1}"
+    },
+    {
+      "match": "Optimization complete.\nIterations: {0}\nInitial merit: {1}\nFinal merit:   {2}",
+      "replace": "优化完成。\n迭代次数：{0}\n初始评价函数值：{1}\n最终评价函数值：{2}"
+    },
+    {
+      "match": "Optimization failed: {0}",
+      "replace": "优化失败：{0}"
+    },
+    {
+      "match": "Rerunning {0} with new settings...",
+      "replace": "正在用新设置重新运行 {0}..."
+    },
+    {
+      "match": "Results for {0}",
+      "replace": "{0} 的结果"
+    },
+    {
+      "match": "Run {0}",
+      "replace": "运行 {0}"
+    },
+    {
+      "match": "Running {0}...",
+      "replace": "正在运行 {0}..."
+    },
+    {
+      "match": "Save {0} Settings",
+      "replace": "保存 {0} 的设置"
+    },
+    {
+      "match": "Save failed: {0}",
+      "replace": "保存失败：{0}"
+    },
+    {
+      "match": "Saved — {0}",
+      "replace": "已保存 — {0}"
+    },
+    {
+      "match": "Settings for {0} saved to {1}",
+      "replace": "{0} 的设置已保存到 {1}"
+    },
+    {
+      "match": "Settings loaded from {0}. Click 'Apply' or 'Run' to see results.",
+      "replace": "已从 {0} 载入设置。点击「应用」或「运行」查看结果。"
+    },
+    {
+      "match": "Stop ({0})",
+      "replace": "停止（{0}）"
+    },
+    {
+      "match": "Stop requested. Iterations so far: {0}",
+      "replace": "已请求停止。当前迭代次数：{0}"
+    },
+    {
+      "match": "Switched to page {0}: {1}",
+      "replace": "已切换到页 {0}：{1}"
+    },
+    {
+      "match": "System: {0} (2D)",
+      "replace": "系统：{0} (2D)"
+    },
+    {
+      "match": "The script '{0}' has been modified.\n\nDo you want to save your changes?",
+      "replace": "脚本 '{0}' 已被修改。\n\n是否保存改动？"
+    },
+    {
+      "match": "Toggle {0}",
+      "replace": "显示/隐藏 {0}"
+    },
+    {
+      "match": "Unknown polarization mode: {0}",
+      "replace": "未知的偏振模式：{0}"
+    },
+    {
+      "match": "VTKViewer Error: {0}",
+      "replace": "VTK 查看器错误：{0}"
+    },
+    {
+      "match": "Variable: min={0}, max={1}",
+      "replace": "变量：最小={0}，最大={1}"
+    },
+    {
+      "match": "Warning: Failed to set aperture for loaded system: {0}",
+      "replace": "警告：为已载入系统设置孔径失败：{0}"
+    },
+    {
+      "match": "Warning: No widget created for '{0}' (annotation: {1})",
+      "replace": "警告：没有为 '{0}' 创建控件（标注：{1}）"
+    },
+    {
+      "match": "Wavelength at row {0} removed.",
+      "replace": "第 {0} 行波长已移除。"
+    },
+    {
+      "match": "Wavelength at row {0} set as primary.",
+      "replace": "第 {0} 行波长已设为主波长。"
+    },
+    {
+      "match": "{0} does not accept bounds. Remove Min/Max from all variables.",
+      "replace": "{0} 不接受边界。请移除所有变量的最小/最大值。"
+    },
+    {
+      "match": "{0} requires bounds on all variables. Set Min/Max for each variable.",
+      "replace": "{0} 要求所有变量都有边界。请为每个变量设置最小/最大值。"
+    },
+    {
+      "match": "{0} reran successfully.",
+      "replace": "{0} 已重新运行成功。"
+    },
+    {
+      "match": "{0} run complete.",
+      "replace": "{0} 运行完成。"
+    }
+  ]
+}

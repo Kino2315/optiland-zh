@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "optiland-gui-zh"
+version = "0.1.0"
+description = "Optiland GUI 简体中文汉化包 —— 运行时翻译层，不改上游源码"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "optiland-zh contributors" }]
+keywords = ["optiland", "optical-design", "gui", "i18n", "chinese", "zh-cn", "pyside6"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: X11 Applications :: Qt",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Natural Language :: Chinese (Simplified)",
+]
+
+# 运行期只需要能 import 到 PySide6；它由 optiland[gui] 提供。
+# 这里不写死依赖，避免和用户已装的 Qt 版本打架。
+dependencies = []
+
+[project.optional-dependencies]
+# 提取工具需要解析源码，但只用标准库 ast，无需额外依赖。
+dev = ["pytest>=7"]
+
+[project.urls]
+Homepage = "https://github.com/Kino2315/optiland-zh"
+Issues = "https://github.com/Kino2315/optiland-zh/issues"
+
+[project.scripts]
+optiland-zh = "optiland_zh.launcher:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# 词库必须随包分发，否则装完是空的
+[tool.setuptools.package-data]
+optiland_zh = ["catalogs/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
