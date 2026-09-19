@@ -15,10 +15,65 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import sys
+from typing import Callable
 
 from . import __version__
 from .catalog import DEFAULT_LANGUAGE, available_languages, load_catalog
+
+# 本项目用的是哪个上游
+UPSTREAM_HINT = 'pip install "optiland[gui]"'
+
+
+def _require_optiland(
+    needs_gui: bool = True,
+    finder: Callable[[str], object] | None = None,
+) -> None:
+    """启动前先确认 Optiland（和 PySide6）装好了。
+
+    为什么需要这个检查
+    ------------------
+    本项目刻意**不声明** ``optiland`` 依赖 —— 免得和用户已经装好的 Qt
+    版本打架。代价是用户很可能只装了汉化包就跑，那时会撞上一个::
+
+        ModuleNotFoundError: No module named 'PySide6'
+
+    这个报错完全看不出"你还需要装 optiland"，所以这里主动换成一句
+    能照着做的提示。
+
+    ``needs_gui=False`` 时只要求 PySide6（自检、审计用不到 optiland 本体）。
+    ``finder`` 是留出来给测试注入的，默认用 importlib。
+    """
+    find = finder or importlib.util.find_spec
+    required = ["PySide6"]
+    if needs_gui:
+        required.append("optiland_gui")
+
+    missing = []
+    for module in required:
+        try:
+            if find(module) is None:
+                missing.append(module)
+        except (ImportError, ValueError):
+            missing.append(module)
+
+    if not missing:
+        return
+
+    hard = [m for m in missing if m == "PySide6"]
+    print(
+        "\n[optiland-zh] 找不到："
+        + "、".join(missing)
+        + "\n\n"
+        + "本包只是汉化层，**不含 Optiland 本体**。请先装上游：\n\n"
+        + f"    {UPSTREAM_HINT}\n\n"
+        + "（汉化包刻意不声明 optiland 依赖，免得和你已装好的 Qt 版本打架。）\n",
+        file=sys.stderr,
+    )
+    # 缺 PySide6 时 Qt 一律用不了；缺 optiland_gui 只是启动器跑不起来
+    raise SystemExit(2 if hard else 1)
+
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -195,11 +250,19 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv if argv is not None else sys.argv[1:])
 
     if args.list_languages:
+        # 这一条只读本包自带的词库，不需要 Qt、也不需要 Optiland
         return cmd_list_languages()
+
     if args.coverage:
+        # 要扫 optiland_gui 的源码，必须有上游
+        _require_optiland(needs_gui=True)
         return cmd_coverage(args.catalog, args.language)
     if args.self_test:
+        # 自检只建控件、不碰 optiland 本体，有 PySide6 就够
+        _require_optiland(needs_gui=False)
         return cmd_self_test(args.language, args.catalog)
+
+    _require_optiland(needs_gui=True)
 
     from . import install
 
