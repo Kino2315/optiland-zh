@@ -49,6 +49,23 @@ class TestVersionConsistency:
             f"{version!r} 不是合法的 PEP 440 版本号"
         )
 
+    def test_catalog_version_matches_package(self, project) -> None:
+        """词库里的 version 必须和包版本一致。
+
+        这个字段本身没人读，所以很容易在发版时被忘掉 —— 于是它会一直停在
+        某个旧版本号上，变成一个**看起来有信息、实际不可信**的装饰字段。
+        要么让它同步，要么删掉它；这里选前者，并用测试保证它不会漂。
+        """
+        import json
+
+        declared = project["project"]["version"]
+        for path in sorted(CATALOGS.glob("*.json")):
+            data = json.loads(path.read_text(encoding="utf-8"))
+            assert data.get("version") == declared, (
+                f"{path.name} 里写的是 {data.get('version')!r}，"
+                f"但包版本是 {declared!r}。发版时记得一起改。"
+            )
+
 
 class TestDistributionMetadata:
     def test_catalog_shipped_as_package_data(self, project) -> None:
