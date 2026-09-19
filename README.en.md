@@ -51,6 +51,38 @@ optiland-zh
 
 One command. It installs the patches and launches the Optiland GUI.
 
+**pip gives you two entry points, for two different uses:**
+
+| Command | Console window | Use it |
+|---|---|---|
+| `optiland-zh` | yes | In a terminal. You can see diagnostics when something breaks |
+| `optiland-zh-gui` | **no** | For double-clicking. No black box; errors appear as a dialog |
+
+### Want a desktop icon?
+
+```sh
+optiland-zh --install-shortcut
+```
+
+Creates an "Optiland 中文版" icon on your desktop, using Optiland's own
+application icon. Double-click it to launch straight into the Chinese UI.
+
+| You want | Add |
+|---|---|
+| Put it somewhere else | `--shortcut-dir <dir>` |
+| The console variant (to see errors) | `--console-shortcut` |
+| Remove it | `optiland-zh --uninstall-shortcut` |
+
+Notes:
+
+- **pip does not create desktop icons automatically**, by design. A package
+  that rearranges your desktop on install is intrusive, and it fails
+  confusingly in CI or on machines without a desktop. Hence an explicit command.
+- The icon is generated under `%LOCALAPPDATA%\optiland-zh\` — **never committed**
+  to the repository, never placed on your desktop.
+- `--uninstall-shortcut` **only removes the one name it created**; shortcuts you
+  made by hand are left alone.
+
 > **No git involved anywhere in this path.** Users never clone the repository
 > and never download Optiland's source — this package contains **none** of the
 > upstream source; it patches Qt at runtime inside your own process.

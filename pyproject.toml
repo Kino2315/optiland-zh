@@ -70,6 +70,19 @@ Changelog = "https://github.com/Kino2315/optiland-zh/releases"
 [project.scripts]
 optiland-zh = "optiland_zh.launcher:main"
 
+# 无控制台版本（Windows 上 pip 会用 pythonw.exe 生成它）。
+#
+# 为什么需要两个入口：optiland-zh.exe 是控制台程序，双击会多弹一个黑框；
+# 对 GUI 程序来说很难看。但直接把唯一的入口换成 windowed 又会带来更糟的
+# 问题 —— pythonw 下 sys.stderr 是 None，出错时"打印提示"等于什么都没发生，
+# 用户双击之后看到的是"毫无反应"。
+#
+# 所以两个都留着：
+#   optiland-zh       终端里用（能看到诊断信息）
+#   optiland-zh-gui   双击用（无黑框，出错时弹对话框）
+[project.gui-scripts]
+optiland-zh-gui = "optiland_zh.launcher:main"
+
 [tool.setuptools]
 package-dir = { "" = "src" }
 

@@ -26,6 +26,35 @@ from .catalog import DEFAULT_LANGUAGE, available_languages, load_catalog
 UPSTREAM_HINT = 'pip install "optiland[gui]"'
 
 
+def _report_problem(message: str) -> None:
+    """把问题告诉用户 —— 但要说在一个用户看得见的地方。
+
+    控制台入口（``optiland-zh``）：直接打到 stderr。
+    无控制台入口（``optiland-zh-gui``，Windows 上是 pythonw）：**``sys.stderr``
+    是 ``None``**，这时候"打印"等于什么都没发生 —— 用户双击之后看到的
+    是「毫无反应」，比报错还难排查。
+
+    所以这里退回到弹一个对话框。这正是不能只有一个 windowed 入口的原因。
+    """
+    if sys.stderr is not None:
+        print(message, file=sys.stderr)
+        return
+    try:  # pragma: no cover - 只有 pythonw 下才会走到
+        from PySide6.QtWidgets import QApplication, QMessageBox
+
+        app = QApplication.instance() or QApplication([])
+        QMessageBox.critical(None, "optiland-zh", message)
+        del app
+    except Exception:
+        # 连 Qt 都没有（比如压根没装 optiland），那就退回最原始的办法
+        try:  # pragma: no cover
+            import ctypes
+
+            ctypes.windll.user32.MessageBoxW(None, message, "optiland-zh", 0x10)
+        except Exception:
+            pass
+
+
 def _require_optiland(
     needs_gui: bool = True,
     finder: Callable[[str], object] | None = None,
@@ -62,14 +91,13 @@ def _require_optiland(
         return
 
     hard = [m for m in missing if m == "PySide6"]
-    print(
+    _report_problem(
         "\n[optiland-zh] 找不到："
         + "、".join(missing)
         + "\n\n"
         + "本包只是汉化层，**不含 Optiland 本体**。请先装上游：\n\n"
         + f"    {UPSTREAM_HINT}\n\n"
-        + "（汉化包刻意不声明 optiland 依赖，免得和你已装好的 Qt 版本打架。）\n",
-        file=sys.stderr,
+        + "（汉化包刻意不声明 optiland 依赖，免得和你已装好的 Qt 版本打架。）\n"
     )
     # 缺 PySide6 时 Qt 一律用不了；缺 optiland_gui 只是启动器跑不起来
     raise SystemExit(2 if hard else 1)
@@ -112,6 +140,26 @@ def build_parser() -> argparse.ArgumentParser:
         "--self-test",
         action="store_true",
         help="离屏自检：验证补丁是否真的生效，然后退出",
+    )
+    parser.add_argument(
+        "--install-shortcut",
+        action="store_true",
+        help="在桌面创建启动快捷方式，然后退出",
+    )
+    parser.add_argument(
+        "--uninstall-shortcut",
+        action="store_true",
+        help="删除本工具创建的桌面快捷方式，然后退出",
+    )
+    parser.add_argument(
+        "--shortcut-dir",
+        metavar="DIR",
+        help="快捷方式放进这个目录（默认用系统桌面，含中文系统的「桌面」）",
+    )
+    parser.add_argument(
+        "--console-shortcut",
+        action="store_true",
+        help="快捷方式指向带控制台的入口（默认指向无控制台版本）",
     )
     parser.add_argument("--version", action="version", version=f"optiland-zh {__version__}")
     return parser
@@ -241,6 +289,57 @@ def cmd_self_test(language: str, catalog_file: str | None) -> int:
 
 
 # ---------------------------------------------------------------------------
+# 快捷方式
+# ---------------------------------------------------------------------------
+
+
+def cmd_install_shortcut(shortcut_dir: str | None, console: bool) -> int:
+    """在桌面建一个启动快捷方式。
+
+    刻意不要求 optiland 已装好 —— 用户完全可能想先建好图标。
+    代价是拿不到自定义图标（图标要从 optiland_gui 的 PNG 转），
+    那就用系统默认图标，功能不受影响。
+    """
+    from pathlib import Path
+
+    from . import shortcut as shortcut_mod
+
+    try:
+        link = shortcut_mod.install(
+            gui=not console,
+            desktop=Path(shortcut_dir) if shortcut_dir else None,
+        )
+    except RuntimeError as exc:
+        _report_problem(f"\n[optiland-zh] 创建快捷方式失败：\n\n{exc}\n")
+        return 1
+
+    entry = "带控制台" if console else "无控制台"
+    print(f"\n  已创建：{link}")
+    print(f"  入口  ：{shortcut_mod.launcher_path(gui=not console)}（{entry}）")
+    print(f"  图标  ：{shortcut_mod.ensure_icon() or '（没拿到，用系统默认）'}")
+    print("\n  双击它就以中文界面启动 Optiland。")
+    print("  不想要了：optiland-zh --uninstall-shortcut\n")
+    return 0
+
+
+def cmd_uninstall_shortcut(shortcut_dir: str | None) -> int:
+    from pathlib import Path
+
+    from . import shortcut as shortcut_mod
+
+    removed = shortcut_mod.uninstall(
+        desktop=Path(shortcut_dir) if shortcut_dir else None
+    )
+    if removed:
+        for path in removed:
+            print(f"  已删除：{path}")
+    else:
+        print("  没有找到本工具创建的快捷方式。")
+        print("  （只删自己建的那两个名字，不会去动你手工做的快捷方式。）")
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # 主入口
 # ---------------------------------------------------------------------------
 
@@ -252,6 +351,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.list_languages:
         # 这一条只读本包自带的词库，不需要 Qt、也不需要 Optiland
         return cmd_list_languages()
+
+    if args.install_shortcut:
+        # 同理不要求 optiland：用户可能想先把图标建好
+        return cmd_install_shortcut(args.shortcut_dir, args.console_shortcut)
+    if args.uninstall_shortcut:
+        return cmd_uninstall_shortcut(args.shortcut_dir)
 
     if args.coverage:
         # 要扫 optiland_gui 的源码，必须有上游
