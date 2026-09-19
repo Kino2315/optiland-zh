@@ -2,13 +2,13 @@
 
 **Optiland GUI 简体中文汉化包** —— 运行期翻译层，不改上游源码一行。
 
-[English](README.en.md) | 中文
+[English](https://github.com/Kino2315/optiland-zh/blob/main/README.en.md) | 中文
 
-![效果](docs/screenshot-zh.png)
+![效果](https://raw.githubusercontent.com/Kino2315/optiland-zh/main/docs/screenshot-zh.png)
 
 > 这份 README 是**查阅手册**：怎么装、怎么用、怎么改。
 > 想看这个项目的**来龙去脉和技术看点**（文字即逻辑键的陷阱、六个实测踩出来的坑、
-> 覆盖率数字该怎么审查），读 [项目介绍](docs/intro.md)。
+> 覆盖率数字该怎么审查），读 [项目介绍](https://github.com/Kino2315/optiland-zh/blob/main/docs/intro.md)。
 
 ## 这是什么
 
@@ -237,13 +237,13 @@ Qt 的 objectName。
 
 ## 许可
 
-MIT，见 [LICENSE](LICENSE)。
+MIT，见 [LICENSE](https://github.com/Kino2315/optiland-zh/blob/main/LICENSE)。
 
 上游 [Optiland](https://github.com/optiland/optiland) 同为 MIT
 （Copyright © 2024 Kramer Harrison）。本项目通过运行期补丁工作，不分发也不修改
-其源码。第三方组件与术语来源的说明见 [NOTICE.md](NOTICE.md)。
+其源码。第三方组件与术语来源的说明见 [NOTICE.md](https://github.com/Kino2315/optiland-zh/blob/main/NOTICE.md)。
 
 ## 贡献
 
-见 [CONTRIBUTING.md](CONTRIBUTING.md)。最需要的贡献是**新语言**和**补词条**——
+见 [CONTRIBUTING.md](https://github.com/Kino2315/optiland-zh/blob/main/CONTRIBUTING.md)。最需要的贡献是**新语言**和**补词条**——
 那两件事不需要懂 Python。

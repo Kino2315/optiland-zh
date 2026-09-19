@@ -3,14 +3,14 @@
 **Simplified Chinese localization for the Optiland GUI** — a runtime
 translation layer that patches nothing on disk.
 
-[English](README.en.md) | [中文](README.md)
+English | [中文](https://github.com/Kino2315/optiland-zh/blob/main/README.md) | [PyPI](https://pypi.org/project/optiland-gui-zh/)
 
-![screenshot](docs/screenshot-zh.png)
+![screenshot](https://raw.githubusercontent.com/Kino2315/optiland-zh/main/docs/screenshot-zh.png)
 
 > This README is the **reference manual**: install, usage, internals.
 > For the **story and the technical highlights** — the "text is a logic key"
 > trap, six traps found only by measurement, and how to audit a coverage
-> number — see the [project introduction](docs/intro.md) (Chinese).
+> number — see the [project introduction](https://github.com/Kino2315/optiland-zh/blob/main/docs/intro.md) (Chinese).
 
 ## What this is
 
@@ -246,14 +246,14 @@ would change the font), scipy algorithm names, Qt object names.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](https://github.com/Kino2315/optiland-zh/blob/main/LICENSE).
 
 Upstream [Optiland](https://github.com/optiland/optiland) is MIT as well
 (Copyright © 2024 Kramer Harrison). This project works by runtime patching and
 neither redistributes nor modifies its source. Third-party components and
-terminology sources are documented in [NOTICE.md](NOTICE.md).
+terminology sources are documented in [NOTICE.md](https://github.com/Kino2315/optiland-zh/blob/main/NOTICE.md).
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). The most valuable contributions are
+See [CONTRIBUTING.md](https://github.com/Kino2315/optiland-zh/blob/main/CONTRIBUTING.md). The most valuable contributions are
 **new languages** and **new entries** — neither requires knowing Python.

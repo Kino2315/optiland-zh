@@ -1,0 +1,138 @@
+name: Release
+
+on:
+  # 在 GitHub 上点 "Publish release" 就发到正式 PyPI
+  release:
+    types: [published]
+
+  # 也可以手动跑，默认发到 TestPyPI 先试水
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "发布目标"
+        required: true
+        default: testpypi
+        type: choice
+        options:
+          - testpypi
+          - pypi
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: 打包
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # 校验版本号要用 tag，浅克隆拿不到
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # 发布前先跑测试。发包是不可逆的 —— 同一个版本号 PyPI 不允许重传，
+      # 一旦发出去一个坏的，只能升版本号重发。
+      - name: 安装并跑测试
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libegl1 libgl1 libxkbcommon0 libdbus-1-3 libfontconfig1
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]" "PySide6>=6.5"
+          pytest -q
+
+      # 经典事故：tag 打了 v0.2.0，pyproject 里还写着 0.1.0，
+      # 结果把旧版本重复提交，被 PyPI 拒绝，或者更糟 —— 发出去一个
+      # 版本号和 tag 对不上的包。
+      - name: 校验 tag 与 pyproject 版本一致
+        if: github.event_name == 'release'
+        run: |
+          TAG="${GITHUB_REF_NAME#v}"
+          VER=$(python -c "import tomllib;print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          echo "tag=$TAG  pyproject=$VER"
+          if [ "$TAG" != "$VER" ]; then
+            echo "::error::tag ($TAG) 与 pyproject.toml 里的版本 ($VER) 不一致"
+            exit 1
+          fi
+
+      - name: 校验包内 __version__ 一致
+        run: |
+          VER=$(python -c "import tomllib;print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          SRC=$(python -c "import re,pathlib;print(re.search(r'__version__\s*=\s*\"([^\"]+)\"', pathlib.Path('src/optiland_zh/__init__.py').read_text(encoding='utf-8')).group(1))")
+          echo "pyproject=$VER  __init__=$SRC"
+          if [ "$VER" != "$SRC" ]; then
+            echo "::error::pyproject.toml 与 src/optiland_zh/__init__.py 的版本号不一致"
+            exit 1
+          fi
+
+      - name: 构建 sdist 与 wheel
+        run: |
+          python -m pip install --upgrade build twine
+          python -m build
+          python -m twine check dist/*
+
+      # 词库没打进 wheel 是这项目最隐蔽的发布事故：
+      # 本地开发发现不了（源码目录还在），用户装完才会发现没中文。
+      - name: 确认词库在 wheel 里
+        run: |
+          python - <<'PY'
+          import glob, zipfile
+          whl = glob.glob("dist/*.whl")[0]
+          names = zipfile.ZipFile(whl).namelist()
+          catalogs = [n for n in names if n.endswith(".json") and "catalogs/" in n]
+          assert catalogs, f"wheel 里没有词库，装完会没中文: {names}"
+          print("OK", catalogs)
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish-testpypi:
+    name: 发布到 TestPyPI
+    needs: build
+    if: github.event_name == 'workflow_dispatch' && inputs.target == 'testpypi'
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/optiland-gui-zh
+    permissions:
+      # OIDC 换短期令牌靠这一条。少了它，pypa 的 action 会直接报
+      # "Trusted publishing exchange failure"。
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          # 仓库里已经有一份 dist/ 的话不加这句会报 "already exists"
+          packages-dir: dist/
+
+  publish-pypi:
+    name: 发布到 PyPI
+    needs: build
+    if: github.event_name == 'release' || (github.event_name == 'workflow_dispatch' && inputs.target == 'pypi')
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/optiland-gui-zh
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/

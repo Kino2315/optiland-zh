@@ -1,24 +1,49 @@
 [build-system]
-requires = ["setuptools>=68"]
+# 需要 >=77 才支持 PEP 639 的 SPDX 许可证表达式（license = "MIT"）。
+# 老版本只认 license = { text = "..." } 那张表，写字符串会直接报错。
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "optiland-gui-zh"
 version = "0.1.0"
 description = "Optiland GUI 简体中文汉化包 —— 运行时翻译层，不改上游源码"
-readme = "README.md"
+# 显式写出 content-type：PyPI 靠它决定用什么渲染器，
+# 只给文件名让它猜，一旦猜错整个项目页就是一堆原始 Markdown。
+readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.10"
-license = { text = "MIT" }
+# PEP 639 的 SPDX 表达式。注意：用了它就不能再写
+# "License :: OSI Approved :: MIT License" 分类器——两者同时存在
+# 在 setuptools >= 77 里会冲突报错。
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "optiland-zh contributors" }]
-keywords = ["optiland", "optical-design", "gui", "i18n", "chinese", "zh-cn", "pyside6"]
+keywords = [
+    "optiland",
+    "optical-design",
+    "optics",
+    "ray-tracing",
+    "gui",
+    "i18n",
+    "localization",
+    "chinese",
+    "zh-cn",
+    "pyside6",
+]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: X11 Applications :: Qt",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: Python :: 3",
-    "Topic :: Scientific/Engineering :: Physics",
     "Natural Language :: Chinese (Simplified)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Software Development :: Localization",
 ]
 
 # 运行期只需要能 import 到 PySide6；它由 optiland[gui] 提供。
@@ -26,12 +51,21 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
-# 提取工具需要解析源码，但只用标准库 ast，无需额外依赖。
-dev = ["pytest>=7"]
+# 提取工具只用标准库 ast，不需要额外依赖。
+# tomli 是给 Python 3.10 用的：打包测试要读 pyproject.toml，
+# 而标准库的 tomllib 要 3.11 才有。
+dev = [
+    "pytest>=7",
+    "build>=1",
+    "twine>=5",
+    "tomli>=2; python_version < '3.11'",
+]
 
 [project.urls]
 Homepage = "https://github.com/Kino2315/optiland-zh"
+Repository = "https://github.com/Kino2315/optiland-zh"
 Issues = "https://github.com/Kino2315/optiland-zh/issues"
+Changelog = "https://github.com/Kino2315/optiland-zh/releases"
 
 [project.scripts]
 optiland-zh = "optiland_zh.launcher:main"
@@ -42,7 +76,9 @@ package-dir = { "" = "src" }
 [tool.setuptools.packages.find]
 where = ["src"]
 
-# 词库必须随包分发，否则装完是空的
+# 词库必须随包分发，否则装完是空的。
+# 这一条的正确性由 tests/ 之外的构建产物检查兜底：打完包要看
+# wheel 里到底有没有 catalogs/*.json。
 [tool.setuptools.package-data]
 optiland_zh = ["catalogs/*.json"]
 

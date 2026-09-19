@@ -1,0 +1,15 @@
+# sdist 的默认内容只有 LICENSE / README.md / pyproject.toml / 包本体。
+# 下面这些是"应该跟源码一起分发"的东西，默认不会被带上。
+#
+# 尤其是 NOTICE.md：LICENSE 讲了本项目的授权，NOTICE 讲了它和
+# Optiland、PySide6/Qt 的关系。只发前者会让下游看不懂依赖边界。
+
+include NOTICE.md
+include CONTRIBUTING.md
+include README.en.md
+
+# 项目介绍（叙述式技术文档，对下游读源码有帮助）
+recursive-include docs *.md
+
+# 不用带 docs/*.png：README 和 intro.md 里的截图走的是
+# raw.githubusercontent 绝对地址，sdist 里再塞一份是白增 230KB。
