@@ -22,18 +22,63 @@ QLocale.setDefault(QLocale(QLocale.Language.English, QLocale.Country.UnitedState
 
 ## 安装
 
+分三种人，三条路。**绝大多数人只需要第一段。**
+
+### 一、普通用户
+
 ```sh
-pip install "optiland[gui]"      # 先装 Optiland 本体
-pip install optiland-gui-zh      # 再装汉化（发布后）
+pip install "optiland[gui]"      # ① Optiland 本体（约 300 MB）
+pip install optiland-gui-zh      # ② 本汉化包（46 KB）
 ```
 
-当前可以从源码装：
+**两条都要写。** 本包刻意不声明 `optiland` 依赖——那样会强制拉一份完整的 Qt
+和 VTK，和你已经装好的版本打架。所以 pip 不会替你带上它。
+
+装完直接跑：
 
 ```sh
-git clone <this-repo>
+optiland-zh
+```
+
+就这一条命令。它会装上汉化补丁，然后拉起 Optiland GUI。
+
+> **这一路完全不碰 git。** 用户不需要 clone 仓库，也不需要下载 Optiland 的源码——
+> 本包**不含**上游源码，只在运行期给自己进程里的 Qt 打补丁。原因见
+> [为什么不直接改源码](#为什么不直接改源码)。
+
+### 二、从源码安装
+
+想读代码、想改，或者 PyPI 上还没发布时：
+
+```sh
+pip install "optiland[gui]"
+git clone https://github.com/Kino2315/optiland-zh
 cd optiland-zh
-pip install -e .
+pip install .
 ```
+
+### 三、开发
+
+```sh
+git clone https://github.com/Kino2315/optiland-zh
+cd optiland-zh
+pip install -e ".[dev]"     # -e 是 editable：改完代码立刻生效，不用重装
+pytest -q
+```
+
+### 只装了汉化包、没装上游？
+
+你会看到这段提示，而不是一坨 traceback：
+
+```
+[optiland-zh] 找不到：PySide6、optiland_gui
+
+本包只是汉化层，**不含 Optiland 本体**。请先装上游：
+
+    pip install "optiland[gui]"
+```
+
+照着做即可。`--list-languages` 和 `--help` 不需要 Qt，任何环境下都能用。
 
 ## 使用
 

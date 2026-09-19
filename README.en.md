@@ -29,18 +29,67 @@ so `pip install -U optiland` leaves the localization intact.
 
 ## Install
 
+Three audiences, three paths. **Almost everyone only needs the first one.**
+
+### 1. Regular users
+
+```sh
+pip install "optiland[gui]"      # 1. Optiland itself (~300 MB)
+pip install optiland-gui-zh      # 2. this localization layer (46 KB)
+```
+
+**Both lines are required.** This package deliberately does *not* declare
+`optiland` as a dependency — doing so would drag in a full Qt/VTK stack and
+fight with whatever version you already have installed. So pip will not pull it
+in for you.
+
+Then just run:
+
+```sh
+optiland-zh
+```
+
+One command. It installs the patches and launches the Optiland GUI.
+
+> **No git involved anywhere in this path.** Users never clone the repository
+> and never download Optiland's source — this package contains **none** of the
+> upstream source; it patches Qt at runtime inside your own process.
+> See [why](#the-hard-part-round-tripping).
+
+### 2. From source
+
+To read the code, to modify it, or while it isn't on PyPI yet:
+
 ```sh
 pip install "optiland[gui]"
-pip install optiland-gui-zh     # once published
+git clone https://github.com/Kino2315/optiland-zh
+cd optiland-zh
+pip install .
 ```
 
-From source today:
+### 3. Development
 
 ```sh
-git clone <this-repo>
+git clone https://github.com/Kino2315/optiland-zh
 cd optiland-zh
-pip install -e .
+pip install -e ".[dev]"     # -e = editable: edits take effect immediately
+pytest -q
 ```
+
+### Installed the localization layer but not the upstream?
+
+You get this instead of a raw traceback:
+
+```
+[optiland-zh] 找不到：PySide6、optiland_gui
+
+本包只是汉化层，**不含 Optiland 本体**。请先装上游：
+
+    pip install "optiland[gui]"
+```
+
+Follow it and you're done. `--list-languages` and `--help` need no Qt at all
+and work in any environment.
 
 ## Use
 
