@@ -25,8 +25,17 @@
    optiland-zh --coverage
    ```
 
-**术语请对齐 Zemax 中文版**，见 README 底部的对照表。新术语先查一下
-《光学名词》或 Zemax 中文界面，不要自己造词。
+**术语请对齐 Zemax 中文版。** 新术语先查《光学名词》或 Zemax 中文界面，
+不要自己造词。常用对照：
+
+| 英文 | 中文 |
+|---|---|
+| Lens Data Editor | 镜头数据编辑器 |
+| Aperture / Field / Wavelength | 孔径 / 视场 / 波长 |
+| Radius / Thickness / Material / Conic | 半径 / 厚度 / 材料 / 圆锥系数 |
+| Stop / Sag / Semi-Diameter | 光阑 / 矢高 / 半口径 |
+| Spot Diagram / Ray Fan | 点列图 / 光线扇形图 |
+| OPD / MTF / PSF | 光程差 / 调制传递函数 / 点扩散函数 |
 
 ### 什么不该翻
 
@@ -69,8 +78,9 @@
 ### 先读这两件事
 
 1. **回译机制不能删。** `currentText()` / `QLineEdit.text()` 必须把原文还给
-   程序内部，否则分析、面型编辑、优化变量会静默失效。详见 README 的
-   「最难的部分」。
+   程序内部，否则分析、面型编辑、优化变量会静默失效。详见
+   [项目介绍](https://github.com/Kino2315/optiland-zh/blob/main/docs/intro.md)
+   里「最难的部分：文字就是逻辑键」一节。
 2. **`itemText()` 故意不打补丁。** Qt 用它渲染下拉列表。要动它之前先想清楚
    列表显示怎么办。
 
