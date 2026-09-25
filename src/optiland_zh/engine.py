@@ -19,7 +19,7 @@ GUI 里有 18 处拿控件文字**当逻辑键**用的代码，例如::
 
 * 文字**进入** Qt 时英译中（``addItem`` / ``setText`` / ...）
 * 原文额外存进控件自己的 ``userData``（自定义角色）
-* 逻辑**读出来**时还它英文（``currentText()`` / ``itemText()``）
+* 逻辑**读出来**时还它英文（``currentText()`` / ``QLineEdit.text()``）
 * ``findText`` / ``setCurrentText`` 这类"按文字查找"的接口，查询词先中译英
 
 这样界面是中文，程序内部看到的仍然是英文，两边都不坏。

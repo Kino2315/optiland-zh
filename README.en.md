@@ -1,7 +1,8 @@
 # optiland-zh
 
 **Simplified Chinese localization for the Optiland GUI.** A runtime translation
-layer that never touches the upstream source.
+layer that patches Qt inside its own process. It is only a patch — you still
+need Optiland itself installed.
 
 ![screenshot](https://raw.githubusercontent.com/Kino2315/optiland-zh/main/docs/screenshot-zh.png)
 
@@ -42,7 +43,7 @@ main()
 
 **`PySide6` or `optiland_gui` not found**
 
-You installed the localization layer but not the upstream. Run
+You installed the localization layer but not Optiland itself. Run
 `pip install "optiland[gui]"`.
 
 **Want a desktop icon**
@@ -63,10 +64,10 @@ Qt — so `pip install -U optiland` leaves the localization intact.
 Two things are worth knowing:
 
 **The UI is Chinese; the application still reads English internally.** The GUI
-uses widget text as a logic key in 18 places — for example, looking up the
-analysis-class registry by the name shown in a combo box. Translating one way
-only would make those features **fail silently**. So `currentText()` and
-`QLineEdit.text()` hand the original English back to the application.
+calls `currentText()` and uses that text as a logic key in 18 places — for
+example, looking up the analysis-class registry by the name shown in a combo
+box. Translating one way only would make those features **fail silently**. So
+`currentText()` and `QLineEdit.text()` hand the original English back.
 
 **Widgets Qt creates inside C++ are covered too.** That includes the labels made
 by `QFormLayout.addRow` and the titles of `QDockWidget`s — constructions Python
@@ -83,6 +84,8 @@ Full technical notes: [project introduction](https://github.com/Kino2315/optilan
 ## Contributing
 
 Three ways to help, ordered by the skill required. **The first two need no Python.**
+
+Run the commands below from the **repository root** (their paths are relative):
 
 | Goal | How |
 |---|---|

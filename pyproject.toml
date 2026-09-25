@@ -6,8 +6,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "optiland-gui-zh"
-version = "0.2.1"
-description = "Optiland GUI 简体中文汉化包 —— 运行时翻译层，不改上游源码"
+version = "0.2.2"
+description = "Optiland GUI 简体中文汉化包 —— 运行时翻译层（补丁，需先安装 Optiland 本体）"
 # 显式写出 content-type：PyPI 靠它决定用什么渲染器，
 # 只给文件名让它猜，一旦猜错整个项目页就是一堆原始 Markdown。
 readme = { file = "README.md", content-type = "text/markdown" }
