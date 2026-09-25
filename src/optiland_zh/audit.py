@@ -97,7 +97,8 @@ def main(argv: list[str] | None = None) -> int:
         "--rule",
         choices=[
             "exact-value",
-            "cjk-heuristic",
+            "cjk-only",
+            "cjk-mixed",
             "MISS:patch-not-fired",
             "MISS:still-translatable",
             "MISS:not-translatable",
@@ -138,13 +139,16 @@ def main(argv: list[str] | None = None) -> int:
     # 是中文。用中文去查英文键当然查不到——早期版本就栽在这儿，把 1044 个
     # 已经汉化的节点误报成"未覆盖"。
     #
-    # 判据分四档，强度依次递减。分档计数是为了让百分比**可审查**：
-    # 单看"96.8% 已覆盖"没法判断里面有多少是靠宽松规则凑出来的。
+    # 判据分档，强度依次递减。分档计数是为了让百分比**可审查**：
+    # 单看"96.8% 已覆盖"没法判断里面有多少水份。
     english_keys = set(catalog.entries)
     translated_values = set(catalog.entries.values())
 
     def has_cjk(s: str) -> bool:
         return any("\u4e00" <= ch <= "\u9fff" for ch in s)
+
+    def has_latin(s: str) -> bool:
+        return any(ch.isascii() and ch.isalpha() for ch in s)
 
     # 每档判据各判了多少个节点
     by_rule: Counter[str] = Counter()
@@ -161,11 +165,16 @@ def main(argv: list[str] | None = None) -> int:
             # 词库里有这条，补丁却没生效 —— 真缺口
             missing[kind].append(f"{source:<34} {text}   <- 命中英文键，补丁没生效")
             rule = "MISS:patch-not-fired"
+        elif has_cjk(text) and not has_latin(text):
+            # 一个拉丁字母都没有 —— 不可能还残留未翻译的英文。这一档是**确定的**，
+            # 不是启发式：原界面是英文，渲染出来全是中文，那就是译好了。
+            rule = "cjk-only"
+            covered.append(f"{kind:<10} {source:<34} {text}")
         elif has_cjk(text):
-            # 宽松：含中文就算汉化。动态规则拼出来的结果（如「显示/隐藏 分析」
-            # 「当前项目：xxx」）走这一档。它也可能把"本来就该是中文但漏译"
-            # 的情况误判成已覆盖，所以单独计数，--rule 可以逐条查看。
-            rule = "cjk-heuristic"
+            # 中英混合：还剩拉丁字母。实测全是 Qt 的快捷键字母（「文件(F)」）
+            # 或本来就不该翻的专有名词（「从 CODE V 导入(C)」），不是漏译。
+            # 单独计数，--rule 可以逐条查看。
+            rule = "cjk-mixed"
             covered.append(f"{kind:<10} {source:<34} {text}")
         elif catalog.translate(text) != text:
             # 还能被动态规则改写 —— 说明是"还没走补丁的英文原文"
@@ -185,22 +194,35 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  已覆盖: {hit}  ({hit / total * 100:.1f}%)")
     print(f"  未覆盖: {total - hit}")
     print()
-    print("判定分档（强度从高到低）:")
-    for rule, count in by_rule.most_common():
-        label = {
-            "exact-value": "文字正好等于词库里的某条译文",
-            "cjk-heuristic": "含中文即算已汉化（宽松，见 --strict）",
-            "MISS:patch-not-fired": "词库有译文但补丁没生效（真缺口）",
-            "MISS:still-translatable": "仍是英文原文（真缺口）",
-            "MISS:not-translatable": "本就是数字/objectName/第三方标识符",
-        }.get(rule, rule)
-        print(f"  {count:>5}  {rule:<26} {label}")
+    print("判定分档（已覆盖按强度从高到低，缺口在后）:")
+    # 显式的强度序，**不能按数量排**：cjk-only 只有 30 条，按数量会沉到
+    # MISS 缺口下面 —— 而它恰恰是最"确定"的一档（无拉丁字母 = 不可能有未译英文）。
+    rule_order = [
+        "exact-value",
+        "cjk-only",
+        "cjk-mixed",
+        "MISS:not-translatable",
+        "MISS:patch-not-fired",
+        "MISS:still-translatable",
+    ]
+    labels = {
+        "exact-value": "文字正好等于词库里的某条译文",
+        "cjk-only": "无任何拉丁字母 —— 已译完，确定",
+        "cjk-mixed": "中英混合：还剩快捷键字母或专有名词，逐条可查",
+        "MISS:not-translatable": "本就是数字/objectName/第三方标识符",
+        "MISS:patch-not-fired": "词库有译文但补丁没生效（真缺口）",
+        "MISS:still-translatable": "仍是英文原文（真缺口）",
+    }
+    for rule in rule_order:
+        count = by_rule.get(rule, 0)
+        if count:
+            print(f"  {count:>5}  {rule:<26} {labels[rule]}")
     print()
 
     strict_hit = by_rule["exact-value"]
     if strict_hit != hit:
         print(
-            f"严格口径（只认 exact-value，不含中文启发式）: "
+            f"严格口径（只认 exact-value，不含 cjk-only / cjk-mixed）: "
             f"{strict_hit} / {total} = {strict_hit / total * 100:.1f}%"
         )
     real_gaps = by_rule["MISS:patch-not-fired"] + by_rule["MISS:still-translatable"]
