@@ -1,7 +1,8 @@
 # optiland-zh  
 vibe coding
 
-**Optiland GUI 的简体中文汉化包。** 运行期翻译层，不修改上游源码。
+**Optiland GUI 的简体中文汉化包。** 运行期翻译层。
+这是一个补丁，所以你仍然需要下载Optiland的本体
 
 ![效果](https://raw.githubusercontent.com/Kino2315/optiland-zh/main/docs/screenshot-zh.png)
 
@@ -41,7 +42,7 @@ main()
 
 **提示找不到 `PySide6` 或 `optiland_gui`**
 
-只装了汉化包，没装上游。`pip install "optiland[gui]"` 即可。
+只装了汉化包，没装本体。`pip install "optiland[gui]"` 即可。
 
 **想要桌面图标**
 
