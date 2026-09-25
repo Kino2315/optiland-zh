@@ -48,7 +48,7 @@ You installed the localization layer but not Optiland itself. Run
 
 **Want a desktop icon**
 
-`optiland-zh --install-shortcut`. Undo with `--uninstall-shortcut`.
+`optiland-zh --install-shortcut` creates it; `optiland-zh --uninstall-shortcut` removes it.
 
 **Want another language, or want to add one**
 

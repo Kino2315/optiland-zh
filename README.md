@@ -46,7 +46,7 @@ main()
 
 **想要桌面图标**
 
-`optiland-zh --install-shortcut`。不想要了用 `--uninstall-shortcut`。
+`optiland-zh --install-shortcut` 创建；不想要了用 `optiland-zh --uninstall-shortcut` 删除。
 
 **想换语言，或者加一种语言**
 

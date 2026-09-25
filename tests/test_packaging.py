@@ -31,7 +31,7 @@ def project() -> dict:
 
 
 class TestVersionConsistency:
-    """版本号写了两处，漂移了要当场发现。"""
+    """版本号写了三处（pyproject / __init__ / 每个词库文件），漂移了要当场发现。"""
 
     def test_dunder_version_matches_pyproject(self, project) -> None:
         declared = project["project"]["version"]

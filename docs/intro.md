@@ -268,13 +268,13 @@ python -m optiland_zh.audit --rule cjk-heuristic
 
 动态消息用 `{0} {1}` 位置占位，运行期编译成正则。这是刻意的设计——**比让译者去写 `(?P<n>.+?)` 友好得多，也不容易写错。**
 
-**加一种语言不需要懂 Python**：复制 `zh_CN.json`，改 `language`，翻 `entries` 的值和 `patterns` 的 `replace`（`match` 绝对不能动），然后跑 `--coverage` 看数字。
+**加一种语言不需要懂 Python**：复制 `zh_CN.json`，改 `language`，翻 `entries` 的值和 `patterns` 的 `replace`（`match` 绝对不能动），然后跑 `optiland-zh --coverage` 看数字。
 
 ## 为什么我要写这么多验证工具
 
 因为"汉化完成"这句话本身没有信息量。
 
-一个覆盖率数字如果是黑箱，你没法判断它是真的 96% 还是凑出来的 96%。所以我把审计工具做成**能自己交代数字来源**的：分档统计、逐条可查、口径可切换（`--rule`）。
+一个覆盖率数字如果是黑箱，你没法判断它是真的 96% 还是凑出来的 96%。所以我把审计工具做成**能自己交代数字来源**的：分档统计、逐条可查、口径可切换（`python -m optiland_zh.audit --rule <档位>`）。
 
 **好的指标应该能在你怀疑它的时候，让你亲自去推翻它。**
 

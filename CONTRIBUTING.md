@@ -4,7 +4,7 @@
 
 ## 一、补词条（不需要懂 Python）
 
-1. 跑一遍提取器看还缺什么：
+1. 跑一遍提取器看还缺什么（**在仓库根目录运行**，下面的路径是相对的）：
 
    ```sh
    python -m optiland_zh.extract --diff src/optiland_zh/catalogs/zh_CN.json
@@ -124,8 +124,10 @@ python -m optiland_zh.audit
 ## 提交
 
 - 一个小 PR 只做一件事：要么补词条，要么加语言，要么改引擎。
-- 改引擎的 PR 请在描述里贴 `--self-test` 和 `--audit` 的输出。
-- 加语言的 PR 请贴 `--coverage` 的数字，别低得离谱（目前 zh_CN 是 99.5%）。
+- 改引擎的 PR 请在描述里贴这两条命令的输出：
+  `optiland-zh --self-test` 和 `python -m optiland_zh.audit`。
+- 加语言的 PR 请贴 `optiland-zh -l <语言代码> --coverage` 的数字，别低得离谱
+  （目前 zh_CN 是 99.5%）。
 
 ## 发布（维护者）
 
@@ -134,12 +136,16 @@ python -m optiland_zh.audit
 
 ### 步骤
 
-**1. 改版本号，两处必须一致**（有测试守着，不一致 CI 就红）：
+**1. 改版本号，三处必须一致**（有测试守着，不一致 CI 就红）：
 
 ```
-pyproject.toml                 version = "0.1.1"
-src/optiland_zh/__init__.py    __version__ = "0.1.1"
+pyproject.toml                        version = "0.1.1"
+src/optiland_zh/__init__.py           __version__ = "0.1.1"
+src/optiland_zh/catalogs/zh_CN.json   "version": "0.1.1"
 ```
+
+词库那个字段最容易漏 —— 它平时没人读。漏了测试会报
+「zh_CN.json 里写的是 …，但包版本是 …」。
 
 **2. 提交并推送**：
 
