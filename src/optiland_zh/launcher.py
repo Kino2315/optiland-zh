@@ -147,7 +147,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--audit",
         action="store_true",
-        help="离屏建真实主窗口，遍历控件树逐条核对（其余参数转给 audit）",
+        help="构造真实主窗口（离屏跑、不弹窗），遍历控件树逐条核对文字"
+        "（其余参数转给 audit）",
     )
     parser.add_argument(
         "--extract",
@@ -358,10 +359,20 @@ def cmd_uninstall_shortcut(shortcut_dir: str | None) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    raw = list(sys.argv[1:] if argv is None else argv)
+
+    # `optiland-zh --audit --help` 要能看到 **audit 自己的** 选项。
+    # 不能指望 parse_known_args：--help 是本解析器认得的，argparse 会当场打印
+    # 自己的帮助并退出，轮不到转发。所以这里先截出来，直接交给对应模块。
+    for flag, module_name in (("--audit", "audit"), ("--extract", "extract")):
+        if flag in raw and "--help" in raw[raw.index(flag) + 1 :]:
+            module = importlib.import_module(f".{module_name}", __package__)
+            return module.main(["--help"])
+
     parser = build_parser()
     # 用 parse_known_args：--audit / --extract 后面跟的是那两个模块自己的选项
     # （--rule / --diff …），本解析器不认识，原样收集到 extra 里转发过去。
-    args, extra = parser.parse_known_args(argv if argv is not None else sys.argv[1:])
+    args, extra = parser.parse_known_args(raw)
 
     if args.list_languages:
         # 这一条只读本包自带的词库，不需要 Qt、也不需要 Optiland
@@ -383,7 +394,7 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_self_test(args.language, args.catalog)
 
     if args.audit:
-        # 要建真实主窗口，必须能 import optiland_gui
+        # 要把真正的 MainWindow 构造出来，必须能 import optiland_gui
         _require_optiland(needs_gui=True)
         from .audit import main as audit_main
 
