@@ -170,3 +170,59 @@ class TestCatalogIntegrity:
             assert not any("\u4e00" <= ch <= "\u9fff" for ch in p["match"]), (
                 f"match 里混进了中文: {p['match']!r}"
             )
+
+
+class TestLookup:
+    """``Catalog.lookup`` —— 给 `optiland-zh --lookup` 用的查词。
+
+    回答的是「界面上这句话为什么没翻」。最容易出错的地方是**两种写法要对上**：
+    Qt 在不同控件上会把快捷键标记 `&` 和结尾的省略号去掉，
+    所以屏幕上看到的和词库里的键经常差一两个字符。
+    """
+
+    def setup_method(self) -> None:
+        self.catalog = load_catalog("zh_CN")
+
+    def test_exact_key(self) -> None:
+        hit = self.catalog.lookup("&Save System")
+        assert hit is not None and hit["how"] == "exact"
+        assert hit["value"] == "保存系统(&S)"
+
+    def test_key_without_ampersand(self) -> None:
+        """照着屏幕打字通常没有 `&` —— 必须照样查得到。"""
+        hit = self.catalog.lookup("Save System")
+        assert hit is not None and hit["how"] == "normalized"
+        assert hit["key"] == "&Save System"
+
+    def test_key_without_ampersand_or_ellipsis(self) -> None:
+        hit = self.catalog.lookup("Open System")
+        assert hit is not None and hit["how"] == "normalized"
+        assert hit["key"] == "&Open System..."
+
+    def test_given_the_translation_instead(self) -> None:
+        """给的是译文时要指出来，不然会让人以为查错了。"""
+        hit = self.catalog.lookup("保存系统(&S)")
+        assert hit is not None and hit["how"] == "value"
+        assert hit["key"] == "&Save System"
+
+    def test_dynamic_rule_english_side(self) -> None:
+        """英文原文命中规则的 match 模板。"""
+        hit = self.catalog.lookup("Toggle Analysis")
+        assert hit is not None and hit["how"] == "pattern" and hit["side"] == "en"
+        assert hit["key"] == "Toggle {0}"
+        assert hit["template"] == "显示/隐藏 {0}"
+
+    def test_dynamic_rule_chinese_side(self) -> None:
+        """这句话是规则的中文模板拼出来的 —— 字面量比对查不到它。
+
+        「显示/隐藏 分析」并不等于模板「显示/隐藏 {0}」，
+        所以必须把中文模板编译成正则反过来匹配。
+        """
+        hit = self.catalog.lookup("显示/隐藏 分析")
+        assert hit is not None and hit["how"] == "pattern" and hit["side"] == "zh"
+        assert hit["template"] == "显示/隐藏 {0}"
+
+    def test_genuinely_absent(self) -> None:
+        """字体名查不到 —— 这是对的，它本来就不该翻。"""
+        assert self.catalog.lookup("Cascadia Code") is None
+

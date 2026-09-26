@@ -94,6 +94,37 @@ def compile_pattern(match_template: str, replace_template: str) -> _CompiledPatt
     return _CompiledPattern(regex, placeholders, replace_template, match_template)
 
 
+def normalize_for_lookup(text: str) -> str:
+    """把界面上的文字归一化，用来和词库里的键比对。
+
+    Qt 渲染同一句话时，会按控件类型把**快捷键标记 ``&``** 和**结尾的省略号**
+    去掉，所以「屏幕上看到的」和「词库里的键」经常差一两个字符：
+
+        词库里的键      &Save System
+        菜单里看到的    &Save System
+        工具栏上看到的   Save System
+
+    查词时两边都过一遍这个函数，就不会因为差一个 ``&`` 而查不到。
+    同一个东西出现两种形态，实测在界面里很常见（`保存系统(&S)` 和 `保存系统(S)`
+    同时存在）。
+    """
+    text = text.replace("&", "")
+    text = re.sub(r"(\.\.\.|…)+$", "", text)
+    return text.strip()
+
+
+def _matches_template(text: str, template: str) -> bool:
+    """``text`` 是不是 ``template`` 拼出来的？
+
+    把模板当成 ``match`` 模板重新编译一遍就能反过来匹配它 ——
+    「显示/隐藏 {0}」编译成正则之后，能匹配「显示/隐藏 分析」。
+    """
+    try:
+        return compile_pattern(template, template).regex.match(text) is not None
+    except re.error:
+        return False
+
+
 @dataclass
 class Catalog:
     """一种语言的词库。"""
@@ -197,6 +228,61 @@ class Catalog:
         hit = sum(1 for t in static if t in self.entries)
         hit += sum(1 for t in dynamic if any(p.source == t for p in self.patterns))
         return hit, len(static) + len(dynamic)
+
+    def lookup(self, text: str) -> dict[str, str] | None:
+        """查一句界面文字和词库的关系。查不到返回 ``None``。
+
+        给 ``optiland-zh --lookup`` 用：你在界面上看到一句话，想知道它为什么没翻。
+
+        返回的 dict 里 ``how`` 说明是怎么对上的：
+
+        ==============  ==============================================
+        ``exact``       文字和词库里的键逐字符相等
+        ``normalized``  去掉 ``&`` 和结尾省略号之后相等
+        ``value``       你给的是**译文**，不是英文原文
+        ``pattern``     命中了某条动态规则（见下面的 ``side``）
+        ==============  ==============================================
+
+        ``how == "pattern"`` 时另带 ``side``：``"en"`` 表示你给的英文原文
+        会被这条规则翻掉；``"zh"`` 表示你给的中文是这条规则拼出来的。
+        pattern 档都带 ``key``（英文模板）和 ``template``（中文模板）。
+        """
+        if text in self.entries:
+            return {"how": "exact", "key": text, "value": self.entries[text]}
+
+        normalized = normalize_for_lookup(text)
+        if normalized:
+            for key, value in self.entries.items():
+                if normalize_for_lookup(key) == normalized:
+                    return {"how": "normalized", "key": key, "value": value}
+
+        # 给的是译文
+        for key, value in self.entries.items():
+            if value == text:
+                return {"how": "value", "key": key, "value": value}
+
+        # 动态规则：两个方向都要试
+        for pattern in self.patterns:
+            # ① 英文原文命中规则的 match 模板 —— 「Toggle Analysis」来自「Toggle {0}」
+            if pattern.regex.match(text) is not None:
+                return {
+                    "how": "pattern",
+                    "side": "en",
+                    "key": pattern.source,
+                    "template": pattern.replace_template,
+                }
+            # ② 中文是规则的 replace 模板拼出来的 —— 「显示/隐藏 分析」来自「显示/隐藏 {0}」
+            if pattern.replace_template == text or _matches_template(
+                text, pattern.replace_template
+            ):
+                return {
+                    "how": "pattern",
+                    "side": "zh",
+                    "key": pattern.source,
+                    "template": pattern.replace_template,
+                }
+
+        return None
 
     # -- 诊断 --------------------------------------------------------------
 

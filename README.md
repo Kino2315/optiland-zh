@@ -141,7 +141,7 @@ PySide6 的绑定打补丁，在文字进入 Qt 之前把它换掉——所以
 |---|---|
 | **补词条** | `optiland-zh --extract --diff src/optiland_zh/catalogs/zh_CN.json` 列出还缺什么，把译文加进 `entries` |
 | **加一种语言** | 复制 `catalogs/zh_CN.json`，改 `language` 和 `display_name`，翻译 `entries` 的值以及 `patterns` 里的 `replace`（`match` 不能动） |
-| **改引擎** | 界面上还有英文时，先用 `optiland-zh --audit` 定位它属于哪类拦截点，再按 [CONTRIBUTING.md](https://github.com/Kino2315/optiland-zh/blob/main/CONTRIBUTING.md) 的「改引擎」一节动手 |
+| **改引擎** | 界面上还有英文时，先用 `optiland-zh --lookup "那句英文"` 查它在不在词库里 —— 查得到说明补丁没拦住（引擎问题），查不到说明还没人翻（词条问题）。确认是引擎问题再用 `optiland-zh --audit` 定位属于哪类拦截点，然后按 [CONTRIBUTING.md](https://github.com/Kino2315/optiland-zh/blob/main/CONTRIBUTING.md) 的「改引擎」一节动手 |
 
 改完跑一遍：
 

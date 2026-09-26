@@ -137,6 +137,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="统计词库覆盖了多少条提取出来的界面文字，然后退出",
     )
     parser.add_argument(
+        "--lookup",
+        metavar="文字",
+        help="查一句界面文字：词库里有没有、对应什么译文，然后退出",
+    )
+    parser.add_argument(
         "--self-test",
         action="store_true",
         help="离屏自检：验证补丁是否真的生效，然后退出",
@@ -226,6 +231,71 @@ def cmd_coverage(catalog_file: str | None, language: str) -> int:
             print(f"    {text!r}")
         if len(missing) > 30:
             print(f"    ... 还有 {len(missing) - 30} 条")
+    return 0
+
+
+def cmd_lookup(text: str, language: str, catalog_file: str | None) -> int:
+    """查一句界面文字在词库里的情况。
+
+    回答的是「界面上这个地方为什么是英文」。
+
+    它会**同时容忍两种写法** —— 你在屏幕上看到的可能是 ``Save System``，也可能是
+    ``&Save System``（Qt 在有些控件上会把快捷键标记 ``&`` 去掉），所以匹配之前
+    两边都先归一化。看的人不用知道有 ``&`` 这回事。
+
+    退出码：0 = 词库里有；1 = 词库里没有。
+    """
+    from pathlib import Path
+
+    catalog = load_catalog(Path(catalog_file) if catalog_file else language)
+    hit = catalog.lookup(text)
+
+    if hit is None:
+        print(f"词库里没有「{text}」。")
+        print()
+        print("两种可能，看一眼界面上那句话是什么就分得出：")
+        print("  · 该翻而还没人翻   -> 加一条到 entries（见 CONTRIBUTING.md）")
+        print("  · 本来就不该翻     -> 字体名 / 品牌名 / 算法名 / 控件内部名字，不用管")
+        return 1
+
+    how = hit["how"]
+
+    if how == "value":
+        print("你给的是【译文】，不是英文原文。")
+        print()
+        print(f"    英文  {hit['key']}")
+        print(f"    译文  {hit['value']}")
+        print()
+        print("要查「这句英文为什么没翻」，得输入英文原文。")
+        return 0
+
+    if how == "pattern":
+        if hit.get("side") == "en":
+            print("词库里查到：命中的是【动态规则】，不是逐条词条 —— 但同样算覆盖。")
+        else:
+            print("你给的这句是【动态规则】拼出来的，不是逐条词条。")
+        print()
+        print(f"    英文模板  {hit['key']}")
+        print(f"    中文模板  {hit['template']}")
+        print()
+        print("运行的时候像 {0} 这样的占位符会被实际的值填进去，所以逐条比对也对不上。")
+        if hit.get("side") == "en":
+            print()
+            print("界面上还是英文的话，那是补丁没拦住那个控件 —— 要改引擎。")
+        return 0
+
+    print("词库里查到：")
+    print()
+    print(f"    英文  {hit['key']}")
+    print(f"    译文  {hit['value']}")
+    if how == "normalized":
+        print()
+        print(f"（你给的是「{text}」，和词库里的键差一个 & 或结尾的省略号 ——")
+        print("  Qt 在不同控件上会去掉它们。这里自动忽略了，不用管。）")
+    print()
+    print("词库里有这条，界面上却还是英文的话，那是补丁没拦住那个控件 ——")
+    print("加词条没用，要改引擎。看全部：")
+    print("    optiland-zh --audit --rule MISS:patch-not-fired")
     return 0
 
 
@@ -377,6 +447,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.list_languages:
         # 这一条只读本包自带的词库，不需要 Qt、也不需要 Optiland
         return cmd_list_languages()
+
+    if args.lookup is not None:
+        # 同理，只读词库 —— 不需要 Qt
+        return cmd_lookup(args.lookup, args.language, args.catalog)
 
     if args.install_shortcut:
         # 同理不要求 optiland：用户可能想先把图标建好
