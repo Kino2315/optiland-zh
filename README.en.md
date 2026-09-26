@@ -21,15 +21,73 @@ with whatever version you already have installed, so pip will not pull it in.
 
 ## Usage
 
+**Launch:**
+
 ```sh
-optiland-zh                    # launch (from a terminal; shows diagnostics)
-optiland-zh-gui                # launch (for double-clicking; no console window)
-optiland-zh --list-languages   # list available languages
-optiland-zh --self-test        # headless self-check, no window
-optiland-zh --coverage         # catalog coverage report
+optiland-zh       # from a terminal; errors are visible outside the window
+optiland-zh-gui   # for double-clicking; no black console window
 ```
 
-Or drive it from your own script:
+**Inspection tools** — they print a result and exit without opening the GUI:
+
+```sh
+optiland-zh --list-languages   # list the languages shipped with this package
+optiland-zh --self-test        # is the translation patch actually taking effect?
+optiland-zh --coverage         # how much interface text does the catalog cover?
+optiland-zh --audit            # check every string the interface actually renders
+```
+
+You do not need these day to day. Reach for them **when English shows up in the
+interface, or after upgrading Optiland.** Here is what each one covers:
+
+**`--self-test` — has anything I translated stopped working?**
+
+The localization works by replacing interface text while the program runs. It
+remembers the name of every widget in Optiland and swaps the text before it
+reaches the screen.
+
+**If an Optiland upgrade renames a widget, that replacement silently stops
+working — with no error message** — and the interface quietly reverts to English.
+`--self-test` exercises seven representative cases and tells you which one failed:
+
+```
+[FAIL] 'Spot Diagram' -> 'Spot Diagram'    <- not replaced; still English
+1 check failed: Spot Diagram
+```
+
+**`--coverage` — is anything missing from the catalog?**
+
+Every Optiland upgrade may add new interface text. This command scans Optiland's
+source, counts how many strings the catalog already covers and how many it does
+not, and names the ones that are missing:
+
+```
+Catalog: Simplified Chinese (zh_CN)
+  Static interface text :  310 / 312   99.4%
+  Dynamic message templates :  72 / 72   100.0%
+  Total                 :  382 / 384   99.5%
+
+Untranslated static entries (first 30):
+    'Cascadia Code'
+    'Optiland'
+```
+
+Those last two are a font name and a brand name — they **must not** be translated.
+
+**`--audit` — is there any English left on screen?**
+
+The first two check the *catalog* and the *patch*. This one checks the text that
+is **actually rendered**. It constructs Optiland's real main window, walks the
+entire widget tree, and compares every string it finds against the catalog —
+**including menus that were never opened and tabs that were never clicked.**
+
+That is more reliable than eyeballing a screenshot: a screenshot only shows the
+screen you are looking at.
+
+> "Offscreen" is a Qt run mode: the interface is built as usual but never shown on
+> a display. That is why this works from a terminal and on a headless server.
+
+**Or drive it from your own script:**
 
 ```python
 import optiland_zh
