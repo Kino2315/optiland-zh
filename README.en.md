@@ -70,8 +70,8 @@ point (that is, `optiland-zh-gui`).
 | Keep a console so you can read errors | `optiland-zh --install-shortcut --console-shortcut` |
 | Remove it | `optiland-zh --uninstall-shortcut` |
 
-`--uninstall-shortcut` **only deletes the one name this tool created itself**; it
-will not touch shortcuts you made by hand.
+`--uninstall-shortcut` **only removes the shortcut it created itself**; shortcuts you
+made by hand are left alone.
 
 > The icon file is generated in `%LOCALAPPDATA%\optiland-zh\`.
 
@@ -188,6 +188,10 @@ the real values are filled in at runtime. Some interface text is assembled on th
 `Field 2: (0, 0)`, … — and listing every combination in `entries` is not possible, so these
 templates do the matching.
 
+**These templates are the "dynamic rules"** (the `patterns` field of the catalog file;
+72 of them right now). `--coverage` calls them "dynamic message templates" and
+`--extract` calls them "dynamic patterns" — same thing.
+
 ### Contributing: entries / languages
 
 1. Copy `src/optiland_zh/catalogs/zh_CN.json`
@@ -199,9 +203,9 @@ See [CONTRIBUTING.md](https://github.com/Kino2315/optiland-zh/blob/main/CONTRIBU
 
 #### Added after an upgrade
 
-After an Optiland upgrade the interface may contain new English — text from a new
-feature that nobody has translated yet. **This is usually not a broken
-localization, just an untranslated string** — but do not guess, check:
+After an Optiland upgrade the interface may contain new text that the catalog does
+not have yet. **This is not a broken localization, just an untranslated string** —
+look up that one string:
 
 ```sh
 optiland-zh --lookup "the English text"
@@ -296,13 +300,34 @@ run `pip install .` once more.
 You will not need these day to day. Reach for them **when English shows up in the
 interface, or after upgrading Optiland.**
 
+**When you see English, the first step is to check whether that one string is in the
+catalog** (`--lookup` exists for exactly this; it also appears under
+[Added after an upgrade](#added-after-an-upgrade)):
+
 ```sh
-optiland-zh --self-test   # has anything I already translated stopped working?
-optiland-zh --coverage    # is anything missing from the catalog?
-optiland-zh --audit       # is there any English left on screen?
+optiland-zh --lookup "the English text"
 ```
 
-All three print a result and exit; none of them opens the interface.
+- **Found** → the catalog has a translation but the screen did not change →
+  **the patch did not intercept that widget** → the engine needs fixing
+- **Not found** → **nobody has translated it yet** → just add an entry
+
+**To see how much English is left, and where**, use `--audit` — it walks the whole
+widget tree:
+
+```sh
+optiland-zh --audit
+```
+
+**The other two are on demand.** Both are quick, and both only look at part of the
+picture:
+
+```sh
+optiland-zh --coverage    # what is missing from the catalog (scans source, not the screen)
+optiland-zh --self-test   # are my translations still working (samples 7 cases, not exhaustive)
+```
+
+Each is covered in turn below.
 
 **`--self-test`**
 

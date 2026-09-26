@@ -59,7 +59,7 @@ optiland-zh --install-shortcut
 | 带控制台，方便看报错   | `optiland-zh --install-shortcut --console-shortcut` |
 | 删掉它          | `optiland-zh --uninstall-shortcut`                  |
 
-`--uninstall-shortcut` **只删本工具自己建的那一个名字**，不会去动你手工做的快捷方式。
+`--uninstall-shortcut` **只删它自己建的那个快捷方式**，你手工做的不会被删。
 
 > 图标文件生成在 `%LOCALAPPDATA%\optiland-zh\`。
 
@@ -107,7 +107,7 @@ optiland-zh
 
 这一条命令会装上汉化，然后拉起 Optiland GUI。
 
-也可以加参数：
+也可以使用下列附加命令：
 
 ```sh
 optiland-zh --list-languages    # 列出随包分发的语言
@@ -168,6 +168,10 @@ main()
 界面上的文字有些是拼出来的 —— `Field 1: (0, 0)`、`Field 2: (0, 0)`……逐条写进 `entries`
 写不完，所以用这里的模板来匹配。
 
+**这些模板就叫「动态规则」**（词库文件里是 `patterns` 那个字段，现在 72 条）。
+`--coverage` 的输出里叫它「动态消息模板」，`--extract` 的输出里叫它「动态模式」，
+说的是同一个东西。
+
 ### 贡献：加词条 / 加语言
 
 1. 复制 `src/optiland_zh/catalogs/zh_CN.json`
@@ -179,8 +183,8 @@ main()
 
 #### 更新后补充
 
-Optiland 升级之后，界面里可能多出一些英文 —— 新功能带来的新文字，词库里还没有。
-**这多半不是汉化坏了，只是还没人翻** —— 需要你查一下：
+Optiland 升级之后，界面新增的文字，词库里还没有。
+**这不是汉化坏了，只是还没人翻** —— 需要你用 `--lookup` 查一下：
 
 ```sh
 optiland-zh --lookup "那句英文"
@@ -226,7 +230,7 @@ optiland-zh --extract --diff src/optiland_zh/catalogs/zh_CN.json
 > **那两个数口径不同，不是一回事：**
 > `静态候选 312 + 动态模式 72 = 384` 是**从源码里扫出来的**；
 > `已翻译 508` 是**词库自己的大小**（436 条词条 + 72 条动态规则）。
-> 分母不一样，别拿来相减。
+> 打个比方：一个数的是"源码里有几句英文"，一个数的是"词库里收了多少条" —— 分母不一样，不能相减。
 
 **关于目录和路径，有三件事容易搞混：**
 
@@ -262,13 +266,30 @@ optiland-zh --extract --diff src/optiland_zh/catalogs/zh_CN.json
 
 平时用不上。**界面上冒出英文、或者 Optiland 升级之后**，才需要。
 
+**看到英文，第一步是查那一句在不在词库里**（`--lookup` 就是为这件事准备的，
+上面[「更新后补充」](#更新后补充)里也说过）：
+
 ```sh
-optiland-zh --self-test   # 我翻过的地方，补丁还生效吗
-optiland-zh --coverage    # 词库里漏了哪些
-optiland-zh --audit       # 界面上实际还有没有英文
+optiland-zh --lookup "那句英文"
 ```
 
-三条都只打印结果就退出，不打开界面。
+- **查得到** → 词库有译文、界面却没换成中文 → **补丁没拦住那个控件** → 要改引擎
+- **查不到** → **还没人翻** → 加词条就行
+
+**要看界面上到底还剩多少英文、都在哪**，用 `--audit` —— 它把整棵控件树逐个查一遍：
+
+```sh
+optiland-zh --audit
+```
+
+**另外两条按需跑**，都很快，但都只看局部：
+
+```sh
+optiland-zh --coverage    # 词库里漏了哪些（扫源码，不问界面）
+optiland-zh --self-test   # 我翻过的地方还生效吗（只抽样 7 个点，不是全查）
+```
+
+下面逐条展开。
 
 **`--self-test`**
 
@@ -330,9 +351,9 @@ optiland-zh --audit       # 界面上实际还有没有英文
 **这么多数字里只看最后一行「真缺口」** —— 该翻而没翻的条数，是 0 就说明汉化没问题。
 
 「未覆盖」那 35 条是 `QuickActionsToolbar` 这种控件内部名字、`BFGS` 这种 scipy 算法名、
-序号、装饰符，**本来就不该翻**。
+序号、装饰符，**不该翻译**。
 
-三个百分比量的是不同的东西，别拿来相减：
+三个百分比量的是不同的东西，别相减：
 
 | 数字 | 来自 | 量的是什么 |
 |---|---|---|
