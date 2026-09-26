@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__version__ = "0.2.7"
+__version__ = "0.2.8"
 
 from .catalog import Catalog, load_catalog
 from .engine import install, is_installed, translate, uninstall
