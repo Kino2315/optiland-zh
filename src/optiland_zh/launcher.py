@@ -95,7 +95,7 @@ def _require_optiland(
         "\n[optiland-zh] 找不到："
         + "、".join(missing)
         + "\n\n"
-        + "本包只是汉化层，不含 Optiland 本体。请先装上游：\n\n"
+        + "本包只是汉化层，不含 Optiland 本体。请先装它：\n\n"
         + f"    {UPSTREAM_HINT}\n\n"
         + "（汉化包刻意不声明 optiland 依赖，免得和你已装好的 Qt 版本打架。）\n"
     )

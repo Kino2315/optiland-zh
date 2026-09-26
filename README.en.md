@@ -19,18 +19,18 @@ English | [中文](https://github.com/Kino2315/optiland-zh/blob/main/README.md)
 
 ## What this is
 
-[Optiland](https://github.com/optiland/optiland) (hereafter **upstream**) is a
+[Optiland](https://github.com/optiland/optiland) is a
 complete open-source optical design package (sequential/non-sequential ray
 tracing, optimization, tolerancing, MTF, Zemax file import …) with a Qt GUI. But
 it is **English only, and has no language switch at all**.
 
-This package **does not modify upstream's code**. At startup it replaces the
+This package **does not modify Optiland's code**. At startup it replaces the
 interface text. Therefore:
 
 - **`pip install -U optiland` will not wipe the localization.** The localization
-  does not live in upstream's files, so upgrading cannot touch it.
+  does not live in Optiland's files, so upgrading cannot touch it.
 - **But an upgrade can still break it.** Replacement works by "remembering what
-  every widget in upstream is called". If upstream renames one, that spot silently
+  every widget in Optiland is called". If Optiland renames one, that spot silently
   reverts to English — **with no error at all**. After upgrading, run
   [`optiland-zh --self-test`](#checking-whether-the-localization-broke) to find out.
 
@@ -95,14 +95,14 @@ pip install -e ".[dev]"     # -e is editable: edits take effect at once, no rein
 pytest -q
 ```
 
-### Installed the localization but not upstream?
+### Installed the localization but not Optiland itself?
 
 You will see this message:
 
 ```
 [optiland-zh] 找不到：PySide6、optiland_gui
 
-本包只是汉化层，不含 Optiland 本体。请先装上游：
+本包只是汉化层，不含 Optiland 本体。请先装它：
 
     pip install "optiland[gui]"
 
@@ -154,9 +154,18 @@ main()
 Each language is one JSON file under `src/optiland_zh/catalogs/`. (Currently only
 Simplified Chinese.)
 
-Roughly like this — the real file also carries `display_name`, `version` and other
-fields, so **when adding a language, copy an existing file** rather than writing
-one from scratch:
+The block below is **an illustration, not a complete file**. The real catalog
+carries a few more fields:
+
+- `display_name` — the display name. This is what `optiland-zh --list-languages`
+  prints; omit it and it degrades to the language code (`xx_XX` rather than
+  `简体中文`)
+- `version` — must match the package version. **No code reads it**, but a test
+  enforces it, so `pytest` goes red without it
+- `translators`, `notes` — credit and translation conventions, for humans only
+
+Because of those fields, **when adding a language, copy the existing `zh_CN.json`
+wholesale and edit that**, rather than typing one up from the block below:
 
 ```json
 {
@@ -174,10 +183,10 @@ one from scratch:
 }
 ```
 
-Dynamic messages use `{0}` `{1}` placeholders (same syntax as Python's
-`str.format`); the real values are filled in at runtime. At startup these
-templates are compiled into match rules, which recognize text the interface has
-"assembled" on the fly.
+Dynamic messages use `{0}` `{1}` placeholders (same syntax as Python's `str.format`);
+the real values are filled in at runtime. Some interface text is assembled on the fly — `Field 1: (0, 0)`,
+`Field 2: (0, 0)`, … — and listing every combination in `entries` is not possible, so these
+templates do the matching.
 
 ### Contributing: entries / languages
 
@@ -284,25 +293,23 @@ run `pip install .` once more.
 
 ## Checking whether the localization broke
 
-You will not need these three day to day. Reach for them **when English shows up
-in the interface, or after upgrading Optiland.**
+You will not need these day to day. Reach for them **when English shows up in the
+interface, or after upgrading Optiland.**
 
 ```sh
 optiland-zh --self-test   # has anything I already translated stopped working?
 optiland-zh --coverage    # is anything missing from the catalog?
-optiland-zh --audit       # check every string the interface actually renders
+optiland-zh --audit       # is there any English left on screen?
 ```
 
-**`--self-test` checks "has anything I already translated stopped working".**
+All three print a result and exit; none of them opens the interface.
 
-The localization works by replacing interface text while the program runs. To be
-precise, it remembers the name of every widget in Optiland and swaps the text for
-Chinese before it reaches the screen. **If an Optiland upgrade renames a widget,
-that replacement stops working — and reports no error** — and the interface
-quietly reverts to English.
+**`--self-test`**
 
-The command exercises 7 representative cases. When everything is fine it looks
-like this:
+The localization works by "remembering what every widget is called" and swapping the
+text for Chinese before it reaches the screen. **If an Optiland upgrade renames a
+widget, that spot quietly reverts to English — and reports no error.** This command
+exercises 7 representative cases:
 
 ```
 [OK  ] 'Lens Data Editor' -> '镜头数据编辑器'
@@ -316,14 +323,12 @@ like this:
 自检全部通过。
 ```
 
-If one case fails, that line becomes `[FAIL]`, and the last line tells you
+A case that fails turns into `[FAIL]` on its line, and the last line tells you
 `自检失败 1 项: …`.
 
-**`--coverage` checks "is anything missing from the catalog".**
+**`--coverage`**
 
-Every Optiland upgrade may add interface text. This command scans Optiland's
-source, counts how many strings are translated and how many are not, and names the
-missing ones:
+Scans Optiland's source and counts how many strings are translated:
 
 ```
 词库: 简体中文 (zh_CN)
@@ -336,19 +341,15 @@ missing ones:
     'Optiland'
 ```
 
-Those last two are a font name and a brand name; **they should not be translated
-in the first place.**
+The last two are a font name and a brand name; **they should not be translated**,
+and will stay in this list forever.
 
-**`--audit` checks "is there any English left on screen".**
+**`--audit`**
 
-The first two check the *catalog* and the *patch*. This one checks the text that is
-**actually rendered**. It constructs Optiland's real main window in full (using
-Qt's offscreen mode, so no window appears on screen), walks the entire widget tree,
-and compares every string against the catalog — **including menus that were never
-opened and tabs that were never clicked.** That is more reliable than eyeballing a
-screenshot: a screenshot only shows the current screen.
-
-When it finishes it prints:
+Constructs the whole main window (Qt's offscreen mode — nothing appears on screen),
+walks the entire widget tree and checks every string against the catalog —
+**including menus that were never opened and tabs that were never clicked.** More
+reliable than eyeballing a screenshot, which only shows the current screen.
 
 ```
 窗口树里的文字节点: 1082
@@ -365,66 +366,48 @@ When it finishes it prints:
 真缺口（补丁没生效 + 仍是英文原文）: 0
 ```
 
-**Which number to look at here:**
+**Of all these numbers only the last line matters: `真缺口` (the real gap)** — how
+many strings should have been translated and were not. At 0, the localization is
+fine.
 
-- **Look at whether "真缺口" (the real gap) is 0.** It counts "the catalog has a
-  translation but the patch did not take effect" plus "still the original English"
-  — **things that should have been translated and were not.** If it is 0, the
-  localization is healthy.
-- **The 35 "未覆盖" (uncovered) are not a problem.** They are widget-internal names
-  like `QuickActionsToolbar`, scipy algorithm names like `BFGS`, ordinal numbers,
-  decorations — **they should not be translated in the first place.**
-- **Do not get tangled up in the two percentages.** 96.8% and 90.0% measure the
-  same thing under different rules: the first also counts text that "obviously
-  looks Chinese", the second only counts strings equal character-for-character to
-  a catalog value. **Judge the localization by the "real gap"; do not agonize over
-  either number.**
+The 35 `未覆盖` (uncovered) are widget-internal names like `QuickActionsToolbar`,
+scipy algorithm names like `BFGS`, ordinal numbers, decorations — **they should not
+be translated in the first place.**
 
-**Want to see exactly which nodes are in one bucket?**
+The three percentages measure different things; do not subtract one from another:
+
+| Number | From | What it measures |
+|---|---|---|
+| **99.5%** | `--coverage` | of the strings extractable from Optiland's source, how many are translated |
+| **96.8%** | `--audit` "covered" | of the text actually rendered on screen, how much is already Chinese |
+| **90.0%** | `--audit` "strict" | same, but counting only strings equal character-for-character to a catalog value |
+
+Different denominators: the first is computed over source files, the last two over
+runtime widgets — one string can appear on dozens of widgets, and text assembled at
+runtime does not exist in the source at all.
+
+**How the buckets are defined, and how to audit these numbers yourself**, is in the
+[project introduction](https://github.com/Kino2315/optiland-zh/blob/main/docs/intro.md) (Chinese).
+
+**Want to see which nodes are in one bucket?**
 
 ```sh
 optiland-zh --audit --rule cjk-mixed
 ```
 
-It lists that bucket node by node, in the format "widget type / origin / text":
-
 ```
 === 判据 cjk-mixed 命中的节点（43 条去重）===
     ActionTip  QMenu      文件(F)
     ComboItem  QComboBox  通用 (scipy.minimize)
-    ...
 ```
 
-`--rule` accepts one of these 6 values:
+`--rule` accepts one of these 6 values; a typo errors out on the spot rather than
+silently returning 0 rows:
 
 ```
 exact-value              cjk-only                 cjk-mixed
 MISS:patch-not-fired     MISS:still-translatable  MISS:not-translatable
 ```
-
-A misspelled name errors out on the spot; it does not silently return 0 rows.
-
-**The three percentages are not the same thing — do not mix them up:**
-
-| Number | From | What it measures |
-|---|---|---|
-| **99.5%** | `--coverage` | of the strings extractable from upstream's source, how many are translated |
-| **96.8%** | `--audit` "covered" | of the text actually rendered on screen, how much is already Chinese |
-| **90.0%** | `--audit` "strict" | same, but counting only strings equal character-for-character to a catalog value |
-
-They **should not be equal**: the first is computed over source files, the last two
-over runtime widgets — one string can appear on dozens of widgets; conversely, text
-assembled dynamically at runtime does not exist in the source at all.
-
-**The two "untranslated" lists are not the same thing either:**
-
-- `--coverage`'s "untranslated static entries" = strings that exist in the source
-  but cannot be found in the catalog. **Some of them should not be translated**
-  (a font name like `Cascadia Code`, for instance).
-- `--audit`'s "未覆盖: 35" = of the text rendered on screen, the ones the catalog
-  cannot resolve. **All 35 of them need no translation.**
-- `--audit`'s "**真缺口**" (real gap) = things that should have been translated but
-  were not. **This is the one that, at 0, means the localization is fine.**
 
 ## Known limitations
 
@@ -439,7 +422,7 @@ assembled dynamically at runtime does not exist in the source at all.
   versions (`QStandardItem` is in `QtGui`, not `QtWidgets`); the engine skips
   classes it cannot find, and the corresponding widgets stay untranslated.
 
-## Terminology used when translating upstream
+## Terminology used when translating Optiland
 
 | English | Chinese |
 |---|---|
@@ -454,9 +437,9 @@ assembled dynamically at runtime does not exist in the source at all.
 
 MIT — see [LICENSE](https://github.com/Kino2315/optiland-zh/blob/main/LICENSE).
 
-Upstream [Optiland](https://github.com/optiland/optiland) is MIT as well
+[Optiland](https://github.com/optiland/optiland) itself is MIT as well
 (Copyright © 2024 Kramer Harrison). This project works by patching at runtime; it
-neither distributes nor modifies upstream's source. Third-party components and the
+neither distributes nor modifies Optiland's source. Third-party components and the
 sources of terminology are documented in
 [NOTICE.md](https://github.com/Kino2315/optiland-zh/blob/main/NOTICE.md).
 
