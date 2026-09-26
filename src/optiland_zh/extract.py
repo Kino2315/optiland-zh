@@ -15,10 +15,10 @@
 
 用法
 ----
-    python -m optiland_zh.extract                    # 写出 strings.json
-    python -m optiland_zh.extract --out raw.json
-    python -m optiland_zh.extract --include-all      # 连可疑的一起导出
-    python -m optiland_zh.extract --diff catalogs/zh_CN.json
+    optiland-zh --extract                    # 写出 strings.json
+    optiland-zh --extract --out raw.json
+    optiland-zh --extract --include-all      # 连可疑的一起导出
+    optiland-zh --extract --diff catalogs/zh_CN.json
                                                      # 只列还没翻译的
 """
 
@@ -516,9 +516,9 @@ def _iter_untranslated(report: Report, done: set[str]) -> Iterator[tuple[str, st
 # --------------------------------------------------------------------------
 
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None, prog: str = "optiland-zh --extract") -> int:
     parser = argparse.ArgumentParser(
-        prog="python -m optiland_zh.extract",
+        prog=prog,
         description="从 optiland_gui 源码提取待翻译的界面文字",
     )
     parser.add_argument("--out", default="strings.json", help="输出 JSON 路径")

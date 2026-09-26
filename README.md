@@ -84,9 +84,9 @@ PySide6 的绑定打补丁，在文字进入 Qt 之前把它换掉——所以
 
 | 想做什么 | 怎么做 |
 |---|---|
-| **补词条** | `python -m optiland_zh.extract --diff src/optiland_zh/catalogs/zh_CN.json` 列出还缺什么，把译文加进 `entries` |
+| **补词条** | `optiland-zh --extract --diff src/optiland_zh/catalogs/zh_CN.json` 列出还缺什么，把译文加进 `entries` |
 | **加一种语言** | 复制 `catalogs/zh_CN.json`，改 `language` 和 `display_name`，翻译 `entries` 的值以及 `patterns` 里的 `replace`（`match` 不能动） |
-| **改引擎** | 界面上还有英文时，先用 `python -m optiland_zh.audit` 定位它属于哪类拦截点，再按 [CONTRIBUTING.md](https://github.com/Kino2315/optiland-zh/blob/main/CONTRIBUTING.md) 的「改引擎」一节动手 |
+| **改引擎** | 界面上还有英文时，先用 `optiland-zh --audit` 定位它属于哪类拦截点，再按 [CONTRIBUTING.md](https://github.com/Kino2315/optiland-zh/blob/main/CONTRIBUTING.md) 的「改引擎」一节动手 |
 
 改完跑一遍：
 

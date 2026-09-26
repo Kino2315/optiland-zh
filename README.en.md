@@ -89,9 +89,9 @@ Run the commands below from the **repository root** (their paths are relative):
 
 | Goal | How |
 |---|---|
-| **Add entries** | `python -m optiland_zh.extract --diff src/optiland_zh/catalogs/zh_CN.json` lists what is missing; add translations to `entries` |
+| **Add entries** | `optiland-zh --extract --diff src/optiland_zh/catalogs/zh_CN.json` lists what is missing; add translations to `entries` |
 | **Add a language** | Copy `catalogs/zh_CN.json`, change `language` and `display_name`, translate the values of `entries` and the `replace` side of `patterns` (never `match`) |
-| **Change the engine** | When English remains, run `python -m optiland_zh.audit` to find which interception point it belongs to, then follow the "changing the engine" section of [CONTRIBUTING.md](https://github.com/Kino2315/optiland-zh/blob/main/CONTRIBUTING.md) |
+| **Change the engine** | When English remains, run `optiland-zh --audit` to find which interception point it belongs to, then follow the "changing the engine" section of [CONTRIBUTING.md](https://github.com/Kino2315/optiland-zh/blob/main/CONTRIBUTING.md) |
 
 Before submitting:
 

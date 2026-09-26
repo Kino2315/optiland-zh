@@ -6,7 +6,7 @@
    所以 ``pip install -U optiland`` 之后汉化依然有效。
 2. **词库是数据，不是代码。** 所有译文放在 ``catalogs/*.json``，社区可以直接
    提 PR 加词条、加语言，不需要碰 Python。
-3. **可再提取。** ``python -m optiland_zh.extract`` 能把新版 Optiland 里新增的
+3. **可再提取。** ``optiland-zh --extract`` 能把新版 Optiland 里新增的
    界面文字重新扫出来，升级后按差集补译即可。
 
 公开 API
@@ -23,7 +23,7 @@
 
 from __future__ import annotations
 
-__version__ = "0.2.3"
+__version__ = "0.2.4"
 
 from .catalog import Catalog, load_catalog
 from .engine import install, is_installed, translate, uninstall

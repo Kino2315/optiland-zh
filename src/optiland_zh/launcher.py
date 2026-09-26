@@ -141,6 +141,19 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="离屏自检：验证补丁是否真的生效，然后退出",
     )
+    # 下面两条是别的模块的入口，转发过去。加在这里是为了**调用方式统一**：
+    # 全部是 `optiland-zh --xxx`，不用让人记哪条要写 `python -m`。
+    # 它们自己的选项（--rule / --diff 等）跟在后面，原样转发。
+    parser.add_argument(
+        "--audit",
+        action="store_true",
+        help="离屏建真实主窗口，遍历控件树逐条核对（其余参数转给 audit）",
+    )
+    parser.add_argument(
+        "--extract",
+        action="store_true",
+        help="扫描 optiland_gui 源码提取待翻译文字（其余参数转给 extract）",
+    )
     parser.add_argument(
         "--install-shortcut",
         action="store_true",
@@ -346,7 +359,9 @@ def cmd_uninstall_shortcut(shortcut_dir: str | None) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
-    args = parser.parse_args(argv if argv is not None else sys.argv[1:])
+    # 用 parse_known_args：--audit / --extract 后面跟的是那两个模块自己的选项
+    # （--rule / --diff …），本解析器不认识，原样收集到 extra 里转发过去。
+    args, extra = parser.parse_known_args(argv if argv is not None else sys.argv[1:])
 
     if args.list_languages:
         # 这一条只读本包自带的词库，不需要 Qt、也不需要 Optiland
@@ -366,6 +381,20 @@ def main(argv: list[str] | None = None) -> int:
         # 自检只建控件、不碰 optiland 本体，有 PySide6 就够
         _require_optiland(needs_gui=False)
         return cmd_self_test(args.language, args.catalog)
+
+    if args.audit:
+        # 要建真实主窗口，必须能 import optiland_gui
+        _require_optiland(needs_gui=True)
+        from .audit import main as audit_main
+
+        # --language 本解析器也认，会被它先吃掉，所以要显式补回去
+        return audit_main(["--language", args.language] + extra)
+    if args.extract:
+        # 要定位并扫 optiland_gui 的源码
+        _require_optiland(needs_gui=True)
+        from .extract import main as extract_main
+
+        return extract_main(extra)
 
     _require_optiland(needs_gui=True)
 

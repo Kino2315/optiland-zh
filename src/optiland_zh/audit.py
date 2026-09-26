@@ -5,8 +5,8 @@
 
 用法::
 
-    python -m optiland_zh.audit            # 列出未覆盖的文字
-    python -m optiland_zh.audit --all      # 连已翻译的也列出来
+    optiland-zh --audit            # 列出未覆盖的文字
+    optiland-zh --audit --all      # 连已翻译的也列出来
 """
 
 from __future__ import annotations
@@ -89,8 +89,8 @@ def collect_texts(widget) -> list[tuple[str, str, str]]:
     return found
 
 
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(prog="python -m optiland_zh.audit")
+def main(argv: list[str] | None = None, prog: str = "optiland-zh --audit") -> int:
+    parser = argparse.ArgumentParser(prog=prog)
     parser.add_argument("--all", action="store_true", help="连已翻译的也列出来")
     parser.add_argument("--language", default="zh_CN")
     parser.add_argument(

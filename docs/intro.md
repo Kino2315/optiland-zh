@@ -217,7 +217,7 @@ optiland-zh --coverage
 ### 3. 动态审计（最硬的证据）
 
 ```sh
-python -m optiland_zh.audit
+optiland-zh --audit
 ```
 
 它把真实的 MainWindow 建出来（离屏、不弹窗），遍历整棵控件树，把界面上**实际存在的每一处文字**都抓出来，逐个和词库比对。
@@ -249,8 +249,8 @@ python -m optiland_zh.audit
 后两档都能逐条核查：
 
 ```sh
-python -m optiland_zh.audit --rule cjk-only
-python -m optiland_zh.audit --rule cjk-mixed
+optiland-zh --audit --rule cjk-only
+optiland-zh --audit --rule cjk-mixed
 ```
 
 73 条我逐条看过，**没有一条是漏译**。
@@ -284,7 +284,7 @@ python -m optiland_zh.audit --rule cjk-mixed
 
 因为"汉化完成"这句话本身没有信息量。
 
-一个覆盖率数字如果是黑箱，你没法判断它是真的 96% 还是凑出来的 96%。所以我把审计工具做成**能自己交代数字来源**的：分档统计、逐条可查、口径可切换（`python -m optiland_zh.audit --rule <档位>`）。
+一个覆盖率数字如果是黑箱，你没法判断它是真的 96% 还是凑出来的 96%。所以我把审计工具做成**能自己交代数字来源**的：分档统计、逐条可查、口径可切换（`optiland-zh --audit --rule <档位>`）。
 
 **好的指标应该能在你怀疑它的时候，让你亲自去推翻它。**
 

@@ -7,7 +7,7 @@
 1. 跑一遍提取器看还缺什么（**在仓库根目录运行**，下面的路径是相对的）：
 
    ```sh
-   python -m optiland_zh.extract --diff src/optiland_zh/catalogs/zh_CN.json
+   optiland-zh --extract --diff src/optiland_zh/catalogs/zh_CN.json
    ```
 
    它按源文件分组列出没翻译的字符串。`strings.json` 里每个词条还带**出现位置**
@@ -89,7 +89,7 @@
 界面上还有英文，先判断它是怎么产生的：
 
 ```sh
-python -m optiland_zh.audit          # 走一遍真实控件树，列出没翻的文字
+optiland-zh --audit          # 走一遍真实控件树，列出没翻的文字
 ```
 
 如果 `audit` 报了「命中英文键，补丁没生效」，说明词库里有译文但补丁没拦到。
@@ -109,7 +109,7 @@ python -m optiland_zh.audit          # 走一遍真实控件树，列出没翻�
 
 ```sh
 optiland-zh --self-test
-python -m optiland_zh.audit
+optiland-zh --audit
 ```
 
 ### 别忘了改提取器
@@ -125,7 +125,7 @@ python -m optiland_zh.audit
 
 - 一个小 PR 只做一件事：要么补词条，要么加语言，要么改引擎。
 - 改引擎的 PR 请在描述里贴这两条命令的输出：
-  `optiland-zh --self-test` 和 `python -m optiland_zh.audit`。
+  `optiland-zh --self-test` 和 `optiland-zh --audit`。
 - 加语言的 PR 请贴 `optiland-zh -l <语言代码> --coverage` 的数字，别低得离谱
   （目前 zh_CN 是 99.5%）。
 
